@@ -145,8 +145,8 @@ The following table lists the achieved F1 Scores of the BERT model during IXRT i
   
 | Model Precision      | BERT BASE 384 | BERT LARGE 384 |
 |    :----:   |    :----:   |    :----:   |
-Static 8-bit | 87.433 | 89.787|
-Dynamic 8-bit | 87.526 | 89.861|
+|Static 8-bit | 87.433 | 89.787|
+|Dynamic 8-bit | 87.526 | 89.861|
   
 </div>
 
@@ -156,9 +156,8 @@ The following table lists the achieved exact matches of the BERT model during IX
   
 | Model Precision      | BERT BASE 384 | BERT LARGE 384 |
 |    :----:   |    :----:   |    :----:   |
-Model Precision | BERT BASE 384 | BERT LARGE 384| 
-Static 8-bit | 80.123 | 82.800 |
-Dynamic 8-bit | 80.321 | 82.838 |
+|Static 8-bit | 80.123 | 82.800 |
+|Dynamic 8-bit | 80.321 | 82.838 |
   
 </div>
 
