@@ -130,11 +130,11 @@ One can use tensor core unit (TCU) with input matrix of different data type to e
 
 ### Python Simulation
 
-Run python simulation on FMHA to show deviation as follows. Deviation between the 8-bit quantization output and the groudtruth (FP32 reference). The worst case occurs when the quantization parameter $\alpha_p$  is chosen to be 1. Static quantization uses the predetermined maximum possible value of matrix $\mathbf{P}$.
+Run python simulation on 8-bit FMHA to show deviation between the 8-bit quantization output and the groudtruth (FP32 reference) as follows. The worst case occurs when the quantization parameter $\alpha_p$  is chosen to be 1. Static quantization uses the predetermined maximum possible value of matrix $\mathbf{P}$.
 
 <div align="center"><img src="./fig/deviation_512.png" ...></div>
 
-Run python simulation on FMHA to show the error summation of the output when increasing the sequence length as follows. The error summation of the the 8-bit quantization output when compared with the groudtruth (FP32 reference) when increasing the sequence length.
+Run python simulation on 8-bit FMHA to show the error summation of the output when increasing the sequence length as follows. The error summation of the the 8-bit quantization output compared with the groudtruth (FP32 reference) increases when increasing the sequence length.
 
 <div align="center"><img src="./fig/error_sum.png" ...></div>
 
