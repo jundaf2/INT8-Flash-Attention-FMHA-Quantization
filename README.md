@@ -37,7 +37,7 @@ where
 
 <div align="center">
   
-| Model Precision      | BERT BASE 384 |
+| Tensor      | Shape |
 |    :----:   |    :----:   |
 | $\mathbf{Q}_i$  | $\mathbb{R}^{N_{src}\times d}$ |
 | $\mathbf{K}_i$  | $\mathbb{R}^{N_{trg}\times d}$ |
