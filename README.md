@@ -54,7 +54,7 @@ where
 
 ## 8-bit Quantized Attention
 ### 8-bit FMHA
-$$ Attention(\mathbf{Q}_{\texttt{INT8}}, \mathbf{K}_{\texttt{INT8}}, \mathbf{V}_{\texttt{INT8}}) = \left\{ \left[ \left[ Softmax \left[ \frac{ \left[ \mathbf{Q}_{\texttt{INT8}} \cdot \mathbf{K}^T_{\texttt{INT8}} \right]_{\texttt{INT32}}}{\sqrt{d}_{\texttt{FP32}}} \right]_{\texttt{FP32}} \right]_{\texttt{INT8}} \cdot \mathbf{V}_{\texttt{INT8}}\right]_{\texttt{INT32}}\right\}_{\texttt{INT8}} $$
+$$ Attention(\mathbf{Q}_{\texttt{INT8}}, \mathbf{K}_{\texttt{INT8}}, \mathbf{V}_{\texttt{INT8}}) = \left \lbrace\left[ \left[ Softmax \left[ \frac{ \left[ \mathbf{Q}_{\texttt{INT8}} \cdot \mathbf{K}^T_{\texttt{INT8}} \right]_{\texttt{INT32}}}{\sqrt{d}_{\texttt{FP32}}} \right]_{\texttt{FP32}} \right]_{\texttt{INT8}} \cdot \mathbf{V}_{\texttt{INT8}}\right]_{\texttt{INT32}}\right\rbrace_{\texttt{INT8}} $$
 
 See the following figure
 
