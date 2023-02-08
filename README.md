@@ -6,11 +6,10 @@ In this work, we quantize fused multi-head attention (FMHA) and Flash-Attention 
 In this project, we aim to accelerate the FMHA mechanism during the 8-bit Transformer inference of language and vision models using GPGPU. Compared to FP32 inference, employing 8-bit integer (INT8 and UINT8) potentially consumes 4× less storage space but is up to 6× faster. To adapt FP32 algorithms to INT8 algorithms, we need two techniques - quantization and dequantization.
 
 ## Background: FMHA and FLash-Attention
+In the flash-attention, we use subscript $i$ to represent the corresponding variable at step $i$ (the current iteration in the row-wise loop) and $i-1$ to represent the corresponding variable at step $i-1$ (the previous iteration in the row-wise loop).
 ### Attention 
 $$ Attention(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = Softmax\left(\frac{\mathbf{Q} \mathbf{K}^T}{\sqrt{d}}\right)\mathbf{V} $$
 ### Flash Attention
-In the flash-attention, we use subscript $i$ to represent the corresponding variable at step $i$ (the current iteration in the row-wise loop) and $i-1$ to represent the corresponding variable at step $i-1$ (the previous iteration in the row-wise loop).
-
 $$ \mathbf{S}_i = \mathbf{Q}\cdot\mathbf{K}^T_i $$
 
 $$ \tilde{\mathbf{m}}_i = rowmax(\mathbf{S}_i) $$
@@ -55,8 +54,8 @@ where
 </div>
 
 ## 8-bit Quantized Attention
-### 8-bit FMHA
 In the 8-bit versions, we use the respective subscript to indicate the datatypes of the variables.
+### 8-bit FMHA
 
 $$ Attention(\mathbf{Q}_{\texttt{INT8}}, \mathbf{K}_{\texttt{INT8}}, \mathbf{V}_{\texttt{INT8}}) = \left \lbrace\left[ \left[ Softmax \left[ \frac{ \left[ \mathbf{Q}_{\texttt{INT8}} \cdot \mathbf{K}^T_{\texttt{INT8}} \right]_{\texttt{INT32}}}{\sqrt{d}_{\texttt{FP32}}} \right]_{\texttt{FP32}} \right]_{\texttt{INT8}} \cdot \mathbf{V}_{\texttt{INT8}}\right]_{\texttt{INT32}}\right\rbrace_{\texttt{INT8}} $$
 
