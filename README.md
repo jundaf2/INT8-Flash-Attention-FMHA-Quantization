@@ -3,7 +3,7 @@
 In this work, we quantize fused multi-head attention (FMHA) and Flash-Attention to lower precision 8-bit integers in the Transformer inference. The proposed method leverages the very nature of Softmax computation without requiring further prior knowledge of the input data. We improve the accuracy of the attention output of the fused kernel by about a factor of 2 in the simulation.
 
 ## Introduction
-In this project, we aim to accelerate the FMHA mechanism during the 8-bit Transformer inference of language and vision models using GPGPU. Compared to FP32 inference, employing 8-bit integer (INT8 and UINT8) potentially consumes 4× less storage space but is up to 6× faster}. To adapt FP32 algorithms to INT8 algorithms, we need two techniques - quantization and dequantization.
+In this project, we aim to accelerate the FMHA mechanism during the 8-bit Transformer inference of language and vision models using GPGPU. Compared to FP32 inference, employing 8-bit integer (INT8 and UINT8) potentially consumes 4× less storage space but is up to 6× faster. To adapt FP32 algorithms to INT8 algorithms, we need two techniques - quantization and dequantization.
 
 ## Background: FMHA and FLash-Attention
 ### Attention 
@@ -124,7 +124,7 @@ $$ \mathbf{O}_{\texttt{INT8}, N} = \left[ \frac{127}{\alpha_o} \cdot \mathbf{O}_
 
 
 
-One can use tensor core unit (TCU) with input matrix of different data type to explore the full range of the UINT8 to increase computation precision. Without which one shall lose half of the quatization range during before the second GEMM resulting in a loss of precision.
+One can use tensor core unit (TCU) with input matrix of different data type to explore the full range of the UINT8 to increase computation precision. Without which one shall lose half of the quatization range before the second GEMM resulting in a loss of precision.
 
 ## Result
 
