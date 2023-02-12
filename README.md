@@ -142,7 +142,7 @@ Run python simulation on 8-bit FMHA to show the error summation of the output wh
 <div align="center"><img src="./fig/error_sum.png" ...></div>
 
 ### Run real BERT models with accuracy comparison.
-The following table lists the achieved F1 Scores of the BERT model during IXRT inference.
+The following table lists the achieved F1 Scores of the BERT model during 8-bit inference.
 
 <div align="center">
   
@@ -153,7 +153,7 @@ The following table lists the achieved F1 Scores of the BERT model during IXRT i
   
 </div>
 
-The following table lists the achieved exact matches of the BERT model during IXRT inference.
+The following table lists the achieved exact matches of the BERT model during 8-bit inference.
 
 <div align="center">
   
