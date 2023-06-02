@@ -178,3 +178,4 @@ In practice, making the quantization factor greater while fixing the de-quantiza
 [QB18] Jerry Quinn and Miguel Ballesteros. Pieces of eight: 8-bit neural machine translation. arXiv preprint arXiv:1804.05038, 2018.
 
 [VSP+17] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser, and Illia Polosukhin. Attention is all you need.  Advances in neural information processing systems, 30, 2017
+
