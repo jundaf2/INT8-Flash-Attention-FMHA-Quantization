@@ -1,0 +1,1 @@
+-I/home/poweruser/junda.feng/anaconda3/include -I"/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/SYSTEM" -I"/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/fmha" -I"/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc"
