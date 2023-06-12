@@ -16,15 +16,15 @@ void LaunchFMHAInfer_CC(cudaStream_t stream,
   const dim3 gridDim = {static_cast<unsigned int>(attn_desc.batch_num), static_cast<unsigned int>(attn_desc.head_num),  1};
 
   if(attn_desc.seq_len==64)
-    kernel::FMHAInferKernel<64, 64, 64, 16, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
+    kernel::FMHAInferKernel<64, 64, 64, 4, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   else if(attn_desc.seq_len==128)
-    kernel::FMHAInferKernel<64, 64, 128, 16, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
+    kernel::FMHAInferKernel<64, 64, 128, 4, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   else if(attn_desc.seq_len==256)
-    kernel::FMHAInferKernel<64, 64, 256, 16, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
+    kernel::FMHAInferKernel<64, 64, 256, 4, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   else if(attn_desc.seq_len==384)
-    kernel::FMHAInferKernel<64, 64, 384, 16, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
+    kernel::FMHAInferKernel<64, 64, 384, 4, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   else if(attn_desc.seq_len==512)
-    kernel::FMHAInferKernel<64, 64, 512, 16, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
+    kernel::FMHAInferKernel<64, 64, 512, 4, false><<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
 
 }
 
