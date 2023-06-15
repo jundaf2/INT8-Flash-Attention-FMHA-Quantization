@@ -37,32 +37,32 @@ void LaunchFMHAInfer_TCU(cudaStream_t stream,
   const int8_t *padding_mask,
   int8_t *o) {
   if(attn_desc.seq_len==128){
-  const dim3 blockDim = {512,1,1};
+  const dim3 blockDim = {256,1,1};
   const dim3 gridDim = {static_cast<unsigned int>(attn_desc.batch_num), static_cast<unsigned int>(attn_desc.head_num),  1};
   kernel::FMHAInferKernel<128, 128, 128, 8, true> <<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   }
   else if(attn_desc.seq_len==256){
-  const dim3 blockDim = {512,1,1}; 
+  const dim3 blockDim = {256,1,1}; 
   const dim3 gridDim = {static_cast<unsigned int>(attn_desc.batch_num), static_cast<unsigned int>(attn_desc.head_num),  1};
   kernel::FMHAInferKernel<128, 128, 256, 8, true> <<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   }
   else if(attn_desc.seq_len==384){
-  const dim3 blockDim = {512,1,1};
+  const dim3 blockDim = {256,1,1};
   const dim3 gridDim = {static_cast<unsigned int>(attn_desc.batch_num), static_cast<unsigned int>(attn_desc.head_num),  1};
   kernel::FMHAInferKernel<128, 128, 384, 8, true> <<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   }
   else if(attn_desc.seq_len==512){
-  const dim3 blockDim = {512,1,1}; 
+  const dim3 blockDim = {256,1,1}; 
   const dim3 gridDim = {static_cast<unsigned int>(attn_desc.batch_num), static_cast<unsigned int>(attn_desc.head_num),  1};
   kernel::FMHAInferKernel<128, 128, 512, 8, true> <<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   }
   else if(attn_desc.seq_len==1024){
-  const dim3 blockDim = {512,1,1}; 
+  const dim3 blockDim = {256,1,1}; 
   const dim3 gridDim = {static_cast<unsigned int>(attn_desc.batch_num), static_cast<unsigned int>(attn_desc.head_num),  1};
   kernel::FMHAInferKernel<128, 128, 1024, 8, true> <<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   }
   else if(attn_desc.seq_len==2048){
-  const dim3 blockDim = {512,1,1}; 
+  const dim3 blockDim = {256,1,1}; 
   const dim3 gridDim = {static_cast<unsigned int>(attn_desc.batch_num), static_cast<unsigned int>(attn_desc.head_num),  1};
   kernel::FMHAInferKernel<128, 128, 2048, 8, true> <<<gridDim, blockDim, 0, stream>>>(q,k,v,padding_mask,o,fmha_param);
   }

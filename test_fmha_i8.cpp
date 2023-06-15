@@ -75,17 +75,17 @@ public:
     std::bernoulli_distribution b_distribution(0.2); // more 0 than 1
 
     for(int i=0; i < len_mask; i++){
-      reinterpret_cast<int *>(h_padding_mask_ref)[i] = static_cast<int>(b_distribution(generator)); // 
+      reinterpret_cast<int *>(h_padding_mask_ref)[i] = 0;//static_cast<int>(b_distribution(generator)); // 
     }
 
     for (int i = 0; i < len_q; i++) {
-      reinterpret_cast<float *>(h_mat_q_ref)[i] = uf_distribution(generator); //uf_distribution(generator); //  (i%4096/64);//1+(i%4096/64)/64.0f;//i%4096/64;//uf_distribution(generator); // // 
+      reinterpret_cast<float *>(h_mat_q_ref)[i] = (i/head_dim%3); // uf_distribution(generator); //uf_distribution(generator); //  (i%4096/64);//1+(i%4096/64)/64.0f;//i%4096/64;//uf_distribution(generator); // // 
     }
     for (int i = 0; i < len_kvo; i++) {
-      reinterpret_cast<float *>(h_mat_k_ref)[i] = uf_distribution(generator); //1+(i%4096/64)/64.0f;// uf_distribution(generator); //  //uf_distribution(generator); //   
+      reinterpret_cast<float *>(h_mat_k_ref)[i] = 1;// uf_distribution(generator); //1+(i%4096/64)/64.0f;// uf_distribution(generator); //  //uf_distribution(generator); //   
     }
     for (int i = 0; i < len_kvo; i++) {
-      reinterpret_cast<float *>(h_mat_v_ref)[i] = uf_distribution(generator); ///32.0f;//  
+      reinterpret_cast<float *>(h_mat_v_ref)[i] = 1;// uf_distribution(generator); ///32.0f;//  
     }
 
     for(int i=0; i < len_mask; i++){
@@ -137,7 +137,7 @@ public:
     int m,n,k;
     int stride_q,stride_k,stride_v,stride_s,stride_p,stride_o;
 
-   
+    // CPU reference
     {
       m = seq_len; n = seq_len; k = head_dim;
       stride_q = seq_len*head_dim; stride_k = seq_len*head_dim; stride_s = seq_len*seq_len;
@@ -192,13 +192,13 @@ public:
     attn_desc.head_dim = head_dim;
 
 
-    // std::cout << "q_amax: " << q_amax << std::endl;
-    // std::cout << "k_amax: " << k_amax << std::endl;
-    // std::cout << "v_amax: " << v_amax << std::endl;
-    // std::cout << "s_max: " << s_max << std::endl;
-    // std::cout << "r_amax: " << r_amax << std::endl;
+    std::cout << "q_amax: " << q_amax << std::endl;
+    std::cout << "k_amax: " << k_amax << std::endl;
+    std::cout << "v_amax: " << v_amax << std::endl;
+    std::cout << "s_max: " << s_max << std::endl;
+    std::cout << "r_amax: " << r_amax << std::endl;
 
-    float msec = 0.0f;
+    // warp up the device
     {  
       if(use_tcu) {
         gpuImpl::FMHAInferI8(stream, fmha_param, attn_desc, d_mat_q, d_mat_k, d_mat_v, d_padding_mask, d_mat_o, true);
@@ -206,16 +206,33 @@ public:
       else{
         gpuImpl::FMHAInferI8(stream, fmha_param, attn_desc, d_mat_q, d_mat_k, d_mat_v, d_padding_mask, d_mat_o, false);
       }
-
-      ASSERT_CUDA(cudaPeekAtLastError());
-      ASSERT_CUDA(cudaDeviceSynchronize());
     }
+
+    // time it
+    float milliseconds = 0.0f;
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, stream);
+    {  
+      if(use_tcu) {
+        gpuImpl::FMHAInferI8(stream, fmha_param, attn_desc, d_mat_q, d_mat_k, d_mat_v, d_padding_mask, d_mat_o, true);
+      }
+      else{
+        gpuImpl::FMHAInferI8(stream, fmha_param, attn_desc, d_mat_q, d_mat_k, d_mat_v, d_padding_mask, d_mat_o, false);
+      }
+    }
+    cudaEventRecord(stop, stream);
+    cudaEventSynchronize(stop);
+    cudaEventElapsedTime(&milliseconds , start, stop);
     
     double   flops = batch_num*head_num*(double)(seq_len*seq_len*head_dim*2+seq_len*seq_len*(4)+seq_len*seq_len*head_dim*2)*1.0;
-    double   gigaFlops = (flops * 1.0e-9f) / (msec / 1000.0f);
-    double   bandWidth = batch_num*head_num*(double)(4*seq_len*head_dim)*sizeof(int8_t) / (msec * 1000 * 1000);
-    printf("\033[31;47m FMHA Inference took %.3f ms, %.2f GFlop/s, %.2f GB/s \033[0m\n", msec, gigaFlops, bandWidth);
-
+    double   gigaFlops = (flops * 1.0e-9f) / (milliseconds  / 1000.0f);
+    double   bandWidth = batch_num*head_num*(double)(4*seq_len*head_dim)*sizeof(int8_t) / (milliseconds  * 1000 * 1000);
+    printf("\033[31;47m FMHA Inference took %.3f ms, %.2f GFlop/s, %.2f GB/s \033[0m\n", milliseconds , gigaFlops, bandWidth);
+    ASSERT_CUDA(cudaDeviceSynchronize());
+    ASSERT_CUDA(cudaEventDestroy(start));
+    ASSERT_CUDA(cudaEventDestroy(stop));
     ASSERT_CUDA(cudaMemcpy(h_mat_o, d_mat_o, len_kvo * sizeof(int8_t), cudaMemcpyDeviceToHost));
     ASSERT_CUDA(cudaFree(d_padding_mask));
     ASSERT_CUDA(cudaFree(d_mat_q));
@@ -224,8 +241,8 @@ public:
     ASSERT_CUDA(cudaFree(d_mat_o));
     ASSERT_CUDA(cudaStreamDestroy(stream));
 
-    // print_vec_i8((int8_t *)h_mat_o, "h_mat_o: ", 0, 64*4, 64, r_amax);
-    // print_vec((float *)h_mat_o_ref, "h_mat_o_ref: ", 0, 64*4, 64);
+    print_vec_i8((int8_t *)h_mat_o, "h_mat_o: ", 0, 32*head_dim, head_dim, r_amax);
+    print_vec((float *)h_mat_o_ref, "h_mat_o_ref: ", 0, 32*head_dim, head_dim);
     compareResultsWithGoldenI8((int8_t *)h_mat_o, (float *)h_mat_o_ref, len_kvo, r_amax); // o = p*v
 
   }
@@ -268,11 +285,11 @@ protected:
 
 
 int main(int argc, char **argv) {
-  bool use_tcu = false;
+  bool use_tcu = true;
   int batch_num = 1;
-  int seq_len = 64;
-  int head_num = 4;
-  int head_dim = 64;
+  int seq_len = 512;
+  int head_num = 1;
+  int head_dim = 128;
 
   if (argc > 1) {
     use_tcu = atoi(argv[1]);

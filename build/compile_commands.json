@@ -1,13 +1,13 @@
 [
 {
   "directory": "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/build",
-  "command": "/usr/bin/c++  -I/home/poweruser/junda.feng/anaconda3/include -I/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/SYSTEM -I/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/fmha -I/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc  -no-pie -lpthread -std=c++11 -fPIE -Wno-unknown-pragmas -o CMakeFiles/FMHAInfer.dir/test_fmha_i8.cpp.o -c /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/test_fmha_i8.cpp",
+  "command": "/usr/bin/c++  -I/home/poweruser/junda.feng/anaconda3/include -I/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/SYSTEM -I/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/fmha -I/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc  -no-pie -lpthread -std=c++11 -fPIE -o CMakeFiles/FMHAInfer.dir/test_fmha_i8.cpp.o -c /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/test_fmha_i8.cpp",
   "file": "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/test_fmha_i8.cpp",
   "output": "CMakeFiles/FMHAInfer.dir/test_fmha_i8.cpp.o"
 },
 {
   "directory": "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/build",
-  "command": "/home/poweruser/junda.feng/anaconda3/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/FMHAInfer.dir/includes_CUDA.rsp -ccbin=/usr/bin/c++ -gencode code=sm_86,arch=compute_86 --expt-extended-lambda --expt-relaxed-constexpr --compiler-options -fPIC -g -G -Xcompiler -Wall -std=c++14 --generate-code=arch=compute_86,code=[compute_86,sm_86] -Xcompiler=-fPIE -Wno-unknown-pragmas -x cu -c /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/src/fmha_i8.cu -o CMakeFiles/FMHAInfer.dir/src/fmha_i8.cu.o",
+  "command": "/home/poweruser/junda.feng/anaconda3/bin/nvcc -forward-unknown-to-host-compiler  --options-file CMakeFiles/FMHAInfer.dir/includes_CUDA.rsp -ccbin=/usr/bin/c++ -gencode code=sm_86,arch=compute_86 --expt-extended-lambda --expt-relaxed-constexpr --keep --verbose --compiler-options -fPIC -g -v -G -Xcompiler -Wall -std=c++14 --generate-code=arch=compute_86,code=[compute_86,sm_86] -Xcompiler=-fPIE -x cu -c /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/src/fmha_i8.cu -o CMakeFiles/FMHAInfer.dir/src/fmha_i8.cu.o",
   "file": "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/src/fmha_i8.cu",
   "output": "CMakeFiles/FMHAInfer.dir/src/fmha_i8.cu.o"
 }

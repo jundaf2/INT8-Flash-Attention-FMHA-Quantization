@@ -29,13 +29,10 @@ endif (${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 
 set(SRC_FILES_DIR ${PROJECT_SOURCE_DIR}/src)
 set(HDR_FILES_DIR ${PROJECT_SOURCE_DIR}/inc)
-set(CUTLASS_HDR_FILES_DIR ${PROJECT_SOURCE_DIR})
 set(FMHA_HDR_FILES_DIR ${PROJECT_SOURCE_DIR}/fmha)
 # Enable languages.
 enable_language(CXX C)
 
-# FMHAInfer_USE_CUDA requires CMake 3.8 or newer (for DIRect CUDA support)
-cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 # Use ${CMAKE_CXX_COMPILER} as the cuda host compiler.
 if (NOT CMAKE_CUDA_HOST_COMPILER)
 	set(CMAKE_CUDA_HOST_COMPILER ${CMAKE_CXX_COMPILER})
@@ -77,14 +74,16 @@ set(CUDA_LIB_DIRS ${CUDA_PATH}/lib64)
 
 set(CMAKE_CUDA_RUNTIME_LIBRARY "Static")
 
-set(CUDA_FLAGS "--expt-extended-lambda --expt-relaxed-constexpr --compiler-options -fPIC -g -G -Xcompiler -Wall")
+set(CUDA_FLAGS "--expt-extended-lambda --expt-relaxed-constexpr --keep --verbose --compiler-options -fPIC -g -v -G -Xcompiler -Wall")
 set(CUDA_FLAGS "-gencode code=${CUDA_ARCH},arch=${CUDA_COMPUTE} ${CUDA_FLAGS}")
 string(REGEX REPLACE "^sm_" "" ARCH_NUMBER "${CUDA_ARCH}")
+
 if ("${CUDA_ARCH}" STREQUAL "sm_${ARCH_NUMBER}")
 	set(CMAKE_CUDA_ARCHITECTURES "${ARCH_NUMBER}")
 else()
 	message(FATAL_ERROR "Unknown CUDA_ARCH: ${CUDA_ARCH}")
 endif()
+
 message(STATUS "Using CUDA architecture: ${CUDA_ARCH}")
 
 set(CUDA_FLAGS "-ccbin=${CMAKE_CXX_COMPILER} ${CUDA_FLAGS}")
@@ -120,7 +119,6 @@ foreach(FNAME IN LISTS ALL_SRC)
     message(${FNAME})
 endforeach()
 
-add_compile_options(-Wno-unknown-pragmas)
 
 add_executable(FMHAInfer ${ALL_SRC})
 target_include_directories(FMHAInfer PRIVATE ${CUDA_HEADER_DIRS} SYSTEM ${CUDA_INCLUDE_DIRS} ${FMHA_HDR_FILES_DIR} ${HDR_FILES_DIR})

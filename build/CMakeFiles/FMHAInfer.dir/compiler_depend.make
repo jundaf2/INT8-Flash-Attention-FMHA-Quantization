@@ -230,8 +230,132 @@ CMakeFiles/FMHAInfer.dir/src/fmha_i8.cu.o: /home/poweruser/junda.feng/INT8-Flash
   /usr/include/c++/7/bits/refwrap.h \
   /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh \
   /home/poweruser/junda.feng/anaconda3/include/cuda.h \
-  /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_param_i8.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/barrier \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/barrier \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/atomic \
+  /usr/include/c++/7/atomic \
+  /usr/include/c++/7/bits/atomic_base.h \
+  /usr/include/c++/7/bits/atomic_lockfree_defines.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/cassert \
+  /usr/include/c++/7/cassert \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__config \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__config \
+  /home/poweruser/junda.feng/anaconda3/include/nv/target \
+  /home/poweruser/junda.feng/anaconda3/include/nv/detail/__target_macros \
+  /home/poweruser/junda.feng/anaconda3/include/nv/detail/__preprocessor \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__pragma_push \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__pragma_push \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__undef_macros \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/cassert \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__pragma_pop \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__pragma_pop \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/cstddef \
+  /usr/include/c++/7/cstddef \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/version \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/version \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/cstddef \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/cstdint \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/climits \
+  /usr/include/c++/7/climits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/climits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/cstdint \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/type_traits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/type_traits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__threading_support \
+  /usr/include/c++/7/thread \
+  /usr/include/c++/7/chrono \
+  /usr/include/c++/7/ratio \
   /usr/include/c++/7/limits \
+  /usr/include/c++/7/ctime \
+  /usr/include/c++/7/bits/parse_numbers.h \
+  /usr/include/c++/7/memory \
+  /usr/include/c++/7/bits/stl_construct.h \
+  /usr/include/c++/7/bits/stl_uninitialized.h \
+  /usr/include/c++/7/bits/stl_tempbuf.h \
+  /usr/include/c++/7/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/7/ext/concurrence.h \
+  /usr/include/c++/7/bits/unique_ptr.h \
+  /usr/include/c++/7/bits/shared_ptr.h \
+  /usr/include/c++/7/bits/shared_ptr_base.h \
+  /usr/include/c++/7/bits/allocated_ptr.h \
+  /usr/include/c++/7/ext/aligned_buffer.h \
+  /usr/include/c++/7/bits/shared_ptr_atomic.h \
+  /usr/include/c++/7/backward/auto_ptr.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/chrono \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/ctime \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__config \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__pragma_push \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__pragma_push \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__undef_macros \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/ctime \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__pragma_pop \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__pragma_pop \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/type_traits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/ratio \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/cstdint \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/climits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/ratio \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/limits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/version \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/limits \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/chrono \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__threading_support \
+  /usr/include/semaphore.h \
+  /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+  /usr/include/unistd.h \
+  /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+  /usr/include/x86_64-linux-gnu/bits/environments.h \
+  /usr/include/x86_64-linux-gnu/bits/confname.h \
+  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+  /usr/include/linux/futex.h \
+  /usr/include/linux/types.h \
+  /usr/include/x86_64-linux-gnu/asm/types.h \
+  /usr/include/asm-generic/types.h \
+  /usr/include/asm-generic/int-ll64.h \
+  /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
+  /usr/include/asm-generic/bitsperlong.h \
+  /usr/include/linux/posix_types.h \
+  /usr/include/linux/stddef.h \
+  /usr/include/x86_64-linux-gnu/asm/posix_types.h \
+  /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
+  /usr/include/asm-generic/posix_types.h \
+  /usr/include/x86_64-linux-gnu/sys/syscall.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd.h \
+  /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
+  /usr/include/x86_64-linux-gnu/bits/syscall.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/atomic \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_scopes.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_gcc.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_base.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/cxx_atomic.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda_generated.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda_derived.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/barrier \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/info.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/driver_abi.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/helpers.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/sync.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/partitioning.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups/memcpy_async.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups.h \
+  /home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/async.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_pipeline.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_pipeline_primitives.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_pipeline_helpers.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_awbarrier_primitives.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_awbarrier_helpers.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_awbarrier.h \
+  /home/poweruser/junda.feng/anaconda3/include/mma.h \
+  /home/poweruser/junda.feng/anaconda3/include/crt/mma.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_fp16.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_fp16.hpp \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_bf16.h \
+  /home/poweruser/junda.feng/anaconda3/include/cuda_bf16.hpp \
+  /home/poweruser/junda.feng/anaconda3/include/crt/mma.hpp \
+  /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_param_i8.h \
   /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.h
 
 CMakeFiles/FMHAInfer.dir/test_fmha_i8.cpp.o: /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/test_fmha_i8.cpp \
@@ -453,11 +577,7 @@ CMakeFiles/FMHAInfer.dir/test_fmha_i8.cpp.o: /home/poweruser/junda.feng/INT8-Fla
   /home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_param_i8.h
 
 
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/cpuGEMM.hpp:
-
-/usr/include/c++/7/bits/stl_numeric.h:
-
-/usr/include/c++/7/numeric:
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/utils.hpp:
 
 /usr/include/x86_64-linux-gnu/c++/7/bits/opt_random.h:
 
@@ -467,532 +587,758 @@ CMakeFiles/FMHAInfer.dir/test_fmha_i8.cpp.o: /home/poweruser/junda.feng/INT8-Fla
 
 /usr/include/c++/7/bits/vector.tcc:
 
-/usr/include/c++/7/bits/stl_vector.h:
-
-/usr/include/c++/7/bits/stl_construct.h:
-
 /usr/include/c++/7/bits/ostream.tcc:
+
+/usr/include/c++/7/bits/basic_ios.tcc:
+
+/usr/include/c++/7/bits/locale_facets.tcc:
 
 /usr/include/x86_64-linux-gnu/c++/7/bits/ctype_inline.h:
 
+/usr/include/c++/7/bits/streambuf_iterator.h:
+
+/usr/include/c++/7/bits/locale_classes.h:
+
+/usr/include/c++/7/bits/ios_base.h:
+
+/usr/include/c++/7/iostream:
+
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_param_i8.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/mma.hpp:
+
+/usr/include/c++/7/bits/istream.tcc:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_bf16.h:
+
+/usr/include/c++/7/bits/random.tcc:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_fp16.hpp:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/mma.h:
+
+/home/poweruser/junda.feng/anaconda3/include/mma.h:
+
+/usr/include/c++/7/stdexcept:
+
+/usr/include/c++/7/functional:
+
+/home/poweruser/junda.feng/anaconda3/include/surface_indirect_functions.h:
+
+/usr/include/locale.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/sm_70_rt.h:
+
+/usr/include/c++/7/bits/basic_string.tcc:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_awbarrier_primitives.h:
+
 /usr/include/x86_64-linux-gnu/c++/7/bits/ctype_base.h:
-
-/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
-
-/usr/include/c++/7/cwctype:
 
 /usr/include/x86_64-linux-gnu/c++/7/bits/error_constants.h:
 
 /usr/include/c++/7/bits/locale_classes.tcc:
 
-/usr/include/c++/7/bits/locale_classes.h:
+/home/poweruser/junda.feng/anaconda3/include/sm_61_intrinsics.hpp:
 
-/usr/include/c++/7/iostream:
-
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/test_fmha_i8.cpp:
-
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_param_i8.h:
-
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh:
-
-/usr/include/c++/7/bits/streambuf_iterator.h:
-
-/usr/include/c++/7/bits/ios_base.h:
-
-/usr/include/c++/7/bits/invoke.h:
-
-/usr/include/asm-generic/errno-base.h:
-
-/usr/include/asm-generic/errno.h:
-
-/usr/include/errno.h:
-
-/usr/include/c++/7/streambuf:
-
-/usr/include/c++/7/cerrno:
-
-/usr/include/c++/7/cstdio:
-
-/usr/include/c++/7/istream:
-
-/usr/include/c++/7/ext/string_conversions.h:
-
-/usr/include/c++/7/ext/alloc_traits.h:
-
-/usr/include/pthread.h:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/gthr.h:
-
-/usr/include/c++/7/bits/basic_string.h:
-
-/usr/include/c++/7/bits/range_access.h:
-
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/utils.hpp:
-
-/usr/include/c++/7/bits/cxxabi_forced.h:
-
-/usr/include/c++/7/bits/ostream_insert.h:
-
-/usr/include/ctype.h:
-
-/usr/include/c++/7/iosfwd:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/c++locale.h:
-
-/usr/include/c++/7/ext/new_allocator.h:
-
-/usr/include/c++/7/bits/allocator.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
-
-/usr/include/c++/7/ios:
-
-/usr/include/c++/7/bits/localefwd.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
-
-/usr/include/wchar.h:
-
-/usr/include/linux/errno.h:
-
-/usr/include/c++/7/cwchar:
-
-/usr/include/c++/7/vector:
-
-/usr/include/c++/7/bits/predefined_ops.h:
-
-/usr/include/c++/7/debug/debug.h:
-
-/usr/include/c++/7/bits/ptr_traits.h:
-
-/usr/include/c++/7/bits/stl_iterator.h:
-
-/usr/include/c++/7/bits/stl_iterator_base_types.h:
-
-/usr/include/c++/7/ext/numeric_traits.h:
-
-/usr/include/c++/7/bits/functexcept.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:
-
-/usr/include/stdio.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/wordsize.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
-
-/usr/include/c++/7/bits/nested_exception.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
-
-/usr/include/c++/7/typeinfo:
-
-/usr/include/c++/7/bits/cxxabi_init_exception.h:
-
-/usr/include/x86_64-linux-gnu/sys/select.h:
-
-/usr/include/c++/7/bits/exception_defines.h:
-
-/usr/include/c++/7/bits/basic_ios.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/_G_config.h:
-
-/usr/include/c++/7/new:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_32_atomic_functions.h:
-
-/home/poweruser/junda.feng/anaconda3/include/device_launch_parameters.h:
-
-/usr/include/x86_64-linux-gnu/bits/setjmp.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/7/include/stdarg.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/device_double_functions.hpp:
-
-/usr/include/c++/7/bits/hash_bytes.h:
-
-/usr/include/c++/7/bits/random.tcc:
-
-/usr/include/c++/7/bits/streambuf.tcc:
-
-/usr/include/c++/7/type_traits:
-
-/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
-
-/usr/include/c++/7/bits/alloc_traits.h:
-
-/usr/include/x86_64-linux-gnu/sys/sysmacros.h:
-
-/usr/include/c++/7/bits/stl_relops.h:
-
-/usr/include/math.h:
-
-/usr/include/c++/7/bits/exception_ptr.h:
-
-/usr/include/string.h:
-
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/cpuSoftmax.hpp:
-
-/home/poweruser/junda.feng/anaconda3/include/driver_types.h:
-
-/usr/include/c++/7/random:
-
-/usr/include/c++/7/bits/uses_allocator.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
-
-/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
-
-/usr/include/c++/7/bits/refwrap.h:
-
-/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h:
-
-/usr/include/x86_64-linux-gnu/bits/floatn.h:
-
-/usr/include/c++/7/bits/stl_algobase.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/host_defines.h:
-
-/usr/include/x86_64-linux-gnu/bits/errno.h:
-
-/usr/include/c++/7/math.h:
-
-/usr/include/c++/7/limits:
-
-/home/poweruser/junda.feng/anaconda3/include/vector_types.h:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/atomic_word.h:
-
-/usr/include/stdint.h:
-
-/usr/include/limits.h:
-
-/home/poweruser/junda.feng/anaconda3/include/cuda_device_runtime_api.h:
-
-/usr/include/c++/7/bits/locale_facets.h:
-
-/usr/include/c++/7/cctype:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/sm_70_rt.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
-/home/poweruser/junda.feng/anaconda3/include/surface_types.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/limits.h:
-
-/usr/include/x86_64-linux-gnu/gnu/stubs.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
-
-/usr/include/features.h:
-
-/usr/include/c++/7/bits/exception.h:
-
-/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
-
-/usr/include/c++/7/bits/concept_check.h:
-
-/home/poweruser/junda.feng/anaconda3/include/channel_descriptor.h:
-
-/usr/include/wctype.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
-/usr/include/c++/7/exception:
-
-/usr/include/c++/7/bits/locale_facets.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
-
-/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
-
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/src/fmha_i8.cu:
-
-/usr/include/c++/7/initializer_list:
-
-/usr/include/x86_64-linux-gnu/bits/local_lim.h:
-
-/home/poweruser/junda.feng/anaconda3/include/cuda_runtime.h:
-
-/usr/include/x86_64-linux-gnu/bits/libio.h:
-
-/usr/include/x86_64-linux-gnu/sys/cdefs.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_20_atomic_functions.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
-
-/usr/include/c++/7/bits/move.h:
-
-/usr/include/c++/7/bits/basic_ios.h:
-
-/usr/include/x86_64-linux-gnu/bits/waitflags.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/c++allocator.h:
-
-/usr/include/x86_64-linux-gnu/bits/typesizes.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
-
-/usr/include/c++/7/ext/atomicity.h:
-
-/usr/include/x86_64-linux-gnu/bits/types.h:
-
-/home/poweruser/junda.feng/anaconda3/include/library_types.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/syslimits.h:
-
-/usr/include/c++/7/cstdint:
-
-/usr/include/stdc-predef.h:
-
-/usr/include/c++/7/bits/memoryfwd.h:
-
-/home/poweruser/junda.feng/anaconda3/include/driver_functions.h:
-
-/usr/include/c++/7/bits/postypes.h:
-
-/usr/include/stdlib.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/host_config.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
-
-/usr/include/time.h:
-
-/home/poweruser/junda.feng/anaconda3/include/cuda.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
-
-/usr/include/c++/7/ostream:
-
-/usr/include/c++/7/array:
-
-/home/poweruser/junda.feng/anaconda3/include/vector_functions.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
-
-/usr/include/c++/7/stdlib.h:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/cpu_defines.h:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h:
-
-/usr/include/c++/7/clocale:
-
-/usr/include/c++/7/debug/assertions.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/common_functions.h:
-
-/usr/include/x86_64-linux-gnu/bits/time.h:
-
-/home/poweruser/junda.feng/anaconda3/include/device_types.h:
-
-/usr/include/alloca.h:
-
-/usr/include/x86_64-linux-gnu/bits/math-vector.h:
-
-/home/poweruser/junda.feng/anaconda3/include/vector_functions.h:
-
-/usr/include/c++/7/cstdlib:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
-
-/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
-
-/home/poweruser/junda.feng/anaconda3/include/builtin_types.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/device_double_functions.h:
-
-/home/poweruser/junda.feng/anaconda3/include/texture_fetch_functions.h:
-
-/usr/include/endian.h:
-
-/usr/include/c++/7/bits/std_function.h:
-
-/usr/include/c++/7/bits/stl_iterator_base_funcs.h:
-
-/usr/include/x86_64-linux-gnu/bits/endian.h:
-
-/usr/include/x86_64-linux-gnu/bits/byteswap-16.h:
-
-/usr/include/x86_64-linux-gnu/bits/cpu-set.h:
-
-/usr/include/strings.h:
-
-/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
-
-/usr/include/c++/7/bits/stl_bvector.h:
-
-/usr/include/c++/7/utility:
-
-/usr/include/c++/7/string:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
-
-/usr/include/x86_64-linux-gnu/bits/sched.h:
-
-/usr/include/x86_64-linux-gnu/bits/sys_errlist.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
-
-/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
-
-/home/poweruser/junda.feng/anaconda3/include/texture_indirect_functions.h:
-
-/usr/include/c++/7/bits/std_abs.h:
-
-/usr/include/assert.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/math_functions.h:
-
-/usr/include/sched.h:
-
-/usr/include/c++/7/cmath:
-
-/usr/include/c++/7/system_error:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h:
-
-/usr/include/c++/7/backward/binders.h:
-
-/usr/include/c++/7/bits/cpp_type_traits.h:
-
-/usr/include/c++/7/bits/stl_function.h:
-
-/usr/include/x86_64-linux-gnu/bits/timex.h:
-
-/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
-
-/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
-
-/usr/include/c++/7/bits/stringfwd.h:
-
-/usr/include/x86_64-linux-gnu/bits/sysmacros.h:
-
-/usr/include/x86_64-linux-gnu/bits/fp-logb.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/sm_80_rt.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
-
-/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_32_atomic_functions.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/byteswap.h:
-
-/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/math_functions.hpp:
-
-/usr/include/c++/7/bits/stl_uninitialized.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_35_intrinsics.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
-
-/usr/include/c++/7/bits/stl_pair.h:
-
-/home/poweruser/junda.feng/anaconda3/include/cuda_texture_types.h:
-
-/home/poweruser/junda.feng/anaconda3/include/cuda_runtime_api.h:
-
-/home/poweruser/junda.feng/anaconda3/include/texture_types.h:
-
-/usr/include/c++/7/tuple:
-
-/home/poweruser/junda.feng/anaconda3/include/cuda_surface_types.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/device_functions.hpp:
-
-/home/poweruser/junda.feng/anaconda3/include/device_atomic_functions.h:
-
-/usr/include/linux/limits.h:
-
-/home/poweruser/junda.feng/anaconda3/include/device_atomic_functions.hpp:
-
-/usr/include/c++/7/bits/char_traits.h:
-
-/usr/include/x86_64-linux-gnu/sys/types.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_60_atomic_functions.hpp:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_20_atomic_functions.h:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_35_atomic_functions.h:
-
-/usr/include/x86_64-linux-gnu/bits/wchar.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_60_atomic_functions.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_20_intrinsics.h:
-
-/usr/include/x86_64-linux-gnu/c++/7/bits/gthr-default.h:
-
-/usr/include/x86_64-linux-gnu/bits/select.h:
-
-/home/poweruser/junda.feng/anaconda3/include/crt/device_functions.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_20_intrinsics.hpp:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_30_intrinsics.h:
-
-/usr/include/c++/7/bits/functional_hash.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_30_intrinsics.hpp:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_32_intrinsics.h:
-
-/home/poweruser/junda.feng/anaconda3/include/sm_32_intrinsics.hpp:
-
-/usr/include/c++/7/bits/istream.tcc:
+/usr/include/x86_64-linux-gnu/asm/bitsperlong.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
-/home/poweruser/junda.feng/anaconda3/include/sm_61_intrinsics.h:
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/cstdint:
 
-/home/poweruser/junda.feng/anaconda3/include/sm_61_intrinsics.hpp:
+/home/poweruser/junda.feng/anaconda3/include/sm_30_intrinsics.hpp:
 
-/usr/include/c++/7/bits/basic_string.tcc:
+/usr/include/c++/7/random:
 
-/usr/include/c++/7/ext/type_traits.h:
+/usr/include/c++/7/bits/functional_hash.h:
 
-/home/poweruser/junda.feng/anaconda3/include/crt/sm_70_rt.h:
+/usr/include/c++/7/ios:
 
-/usr/include/locale.h:
+/home/poweruser/junda.feng/anaconda3/include/crt/device_functions.h:
+
+/usr/include/x86_64-linux-gnu/bits/select.h:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/gthr-default.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/ratio:
+
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
+
+/usr/include/linux/posix_types.h:
+
+/usr/include/c++/7/bits/locale_facets.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_20_atomic_functions.h:
+
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_60_atomic_functions.hpp:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/atomic:
+
+/usr/include/x86_64-linux-gnu/sys/types.h:
+
+/usr/include/c++/7/bits/char_traits.h:
+
+/home/poweruser/junda.feng/anaconda3/include/device_atomic_functions.hpp:
+
+/usr/include/linux/limits.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_gcc.h:
+
+/home/poweruser/junda.feng/anaconda3/include/device_atomic_functions.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/device_functions.hpp:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_surface_types.h:
+
+/usr/include/c++/7/cstddef:
+
+/home/poweruser/junda.feng/anaconda3/include/texture_types.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_texture_types.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_20_intrinsics.hpp:
+
+/usr/include/c++/7/bits/stl_pair.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_35_intrinsics.h:
+
+/usr/include/c++/7/bits/stl_uninitialized.h:
+
+/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_32_atomic_functions.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
+
+/usr/include/c++/7/streambuf:
+
+/usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
+
+/usr/include/c++/7/bits/stl_tempbuf.h:
+
+/usr/include/c++/7/bits/streambuf.tcc:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/sm_80_rt.h:
+
+/usr/include/x86_64-linux-gnu/bits/sysmacros.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/ratio:
+
+/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
+
+/usr/include/c++/7/bits/stl_raw_storage_iter.h:
+
+/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
+
+/usr/include/c++/7/bits/cpp_type_traits.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_fp16.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/cxx_atomic.h:
+
+/usr/include/c++/7/backward/binders.h:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h:
+
+/usr/include/c++/7/cmath:
+
+/usr/include/sched.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/math_functions.h:
+
+/usr/include/assert.h:
+
+/usr/include/c++/7/bits/std_abs.h:
+
+/home/poweruser/junda.feng/anaconda3/include/texture_indirect_functions.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_32_intrinsics.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/x86_64-linux-gnu/bits/sys_errlist.h:
+
+/usr/include/x86_64-linux-gnu/bits/sched.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/ctime:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+/usr/include/c++/7/string:
+
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
+
+/usr/include/strings.h:
+
+/usr/include/x86_64-linux-gnu/bits/cpu-set.h:
+
+/usr/include/c++/7/bits/stl_vector.h:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap-16.h:
+
+/usr/include/x86_64-linux-gnu/bits/endian.h:
+
+/usr/include/c++/7/bits/stl_iterator_base_funcs.h:
+
+/usr/include/endian.h:
+
+/home/poweruser/junda.feng/anaconda3/include/builtin_types.h:
+
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
+
+/usr/include/c++/7/cstdlib:
+
+/usr/include/semaphore.h:
+
+/usr/include/c++/7/bits/std_function.h:
+
+/home/poweruser/junda.feng/anaconda3/include/vector_functions.h:
+
+/usr/include/alloca.h:
+
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/cpuSoftmax.hpp:
+
+/home/poweruser/junda.feng/anaconda3/include/device_types.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/common_functions.h:
+
+/usr/include/c++/7/debug/assertions.h:
+
+/usr/include/wctype.h:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/cpu_defines.h:
+
+/usr/include/c++/7/thread:
+
+/usr/include/c++/7/stdlib.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+
+/home/poweruser/junda.feng/anaconda3/include/vector_functions.hpp:
+
+/usr/include/c++/7/array:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/sync.h:
+
+/usr/include/time.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/c++/7/bits/postypes.h:
 
 /home/poweruser/junda.feng/anaconda3/include/crt/sm_80_rt.hpp:
 
+/home/poweruser/junda.feng/anaconda3/include/driver_functions.h:
+
+/usr/include/c++/7/bits/memoryfwd.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/include/c++/7/cstdint:
+
+/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/syslimits.h:
+
+/home/poweruser/junda.feng/anaconda3/include/library_types.h:
+
+/usr/include/c++/7/ext/atomicity.h:
+
+/usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/c++/7/bits/stl_bvector.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitflags.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_20_atomic_functions.hpp:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+/usr/include/c++/7/tuple:
+
+/usr/include/x86_64-linux-gnu/bits/libio.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_runtime.h:
+
+/usr/include/c++/7/initializer_list:
+
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/src/fmha_i8.cu:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
+
+/usr/include/c++/7/exception:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/device_double_functions.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/cpuGEMM.hpp:
+
+/home/poweruser/junda.feng/anaconda3/include/channel_descriptor.h:
+
+/usr/include/c++/7/bits/concept_check.h:
+
+/usr/include/asm-generic/posix_types.h:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_61_intrinsics.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__pragma_push:
+
+/usr/include/x86_64-linux-gnu/bits/timex.h:
+
+/usr/include/c++/7/bits/exception.h:
+
+/usr/include/features.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__config:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/limits.h:
+
+/home/poweruser/junda.feng/anaconda3/include/surface_types.h:
+
+/usr/include/asm-generic/bitsperlong.h:
+
+/usr/include/x86_64-linux-gnu/asm/unistd.h:
+
+/usr/include/c++/7/cwctype:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/sm_70_rt.hpp:
+
+/usr/include/c++/7/cctype:
+
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
+
+/usr/include/limits.h:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/atomic_word.h:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/c++allocator.h:
+
+/usr/include/c++/7/limits:
+
+/usr/include/c++/7/ostream:
+
+/usr/include/c++/7/math.h:
+
+/usr/include/x86_64-linux-gnu/bits/errno.h:
+
+/usr/include/c++/7/bits/stl_algobase.h:
+
+/usr/include/x86_64-linux-gnu/bits/floatn.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__threading_support:
+
 /home/poweruser/junda.feng/anaconda3/include/surface_functions.h:
 
-/home/poweruser/junda.feng/anaconda3/include/surface_indirect_functions.h:
+/usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h:
 
-/usr/include/c++/7/functional:
+/usr/include/c++/7/bits/refwrap.h:
 
-/usr/include/c++/7/stdexcept:
+/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
+
+/home/poweruser/junda.feng/anaconda3/include/nv/target:
+
+/usr/include/c++/7/bits/stl_function.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
+
+/usr/include/c++/7/bits/uses_allocator.h:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/home/poweruser/junda.feng/anaconda3/include/driver_types.h:
+
+/usr/include/string.h:
+
+/usr/include/c++/7/system_error:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/chrono:
+
+/usr/include/c++/7/bits/exception_ptr.h:
+
+/usr/include/math.h:
+
+/usr/include/x86_64-linux-gnu/bits/semaphore.h:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+/usr/include/x86_64-linux-gnu/bits/math-vector.h:
+
+/usr/include/x86_64-linux-gnu/sys/sysmacros.h:
+
+/usr/include/c++/7/bits/alloc_traits.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
+
+/usr/include/c++/7/bits/stl_numeric.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+
+/usr/include/c++/7/bits/stringfwd.h:
+
+/usr/include/c++/7/type_traits:
+
+/usr/include/c++/7/bits/hash_bytes.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/device_double_functions.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/7/include/stdarg.h:
+
+/home/poweruser/junda.feng/anaconda3/include/device_launch_parameters.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_32_atomic_functions.h:
+
+/usr/include/c++/7/new:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/cstddef:
+
+/usr/include/x86_64-linux-gnu/bits/_G_config.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/cassert:
+
+/usr/include/c++/7/bits/shared_ptr.h:
+
+/usr/include/c++/7/bits/exception_defines.h:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
+
+/usr/include/c++/7/bits/cxxabi_init_exception.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_60_atomic_functions.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_awbarrier_helpers.h:
+
+/usr/include/c++/7/typeinfo:
+
+/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda_generated.h:
+
+/usr/include/c++/7/bits/nested_exception.h:
+
+/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/ctime:
+
+/usr/include/x86_64-linux-gnu/bits/types.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_base.h:
+
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
+
+/usr/include/stdio.h:
+
+/home/poweruser/junda.feng/anaconda3/include/vector_types.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:
+
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/test_fmha_i8.cpp:
+
+/usr/include/c++/7/ext/numeric_traits.h:
+
+/usr/include/c++/7/bits/stl_iterator_base_types.h:
+
+/home/poweruser/junda.feng/anaconda3/include/texture_fetch_functions.h:
+
+/usr/include/c++/7/bits/stl_iterator.h:
+
+/usr/include/c++/7/bits/ptr_traits.h:
+
+/usr/include/c++/7/bits/shared_ptr_atomic.h:
+
+/usr/include/c++/7/debug/debug.h:
+
+/usr/include/c++/7/bits/predefined_ops.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/barrier:
+
+/usr/include/c++/7/cwchar:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_30_intrinsics.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/c++/7/bits/atomic_lockfree_defines.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/host_defines.h:
+
+/usr/include/wchar.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_runtime_api.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_20_intrinsics.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h:
+
+/usr/include/c++/7/bits/localefwd.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
+
+/usr/include/c++/7/bits/allocator.h:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/math_functions.hpp:
+
+/usr/include/c++/7/ext/new_allocator.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_35_atomic_functions.h:
+
+/usr/include/c++/7/utility:
+
+/usr/include/x86_64-linux-gnu/bits/syscall.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/barrier:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/c++locale.h:
+
+/usr/include/c++/7/iosfwd:
+
+/usr/include/ctype.h:
+
+/usr/include/c++/7/bits/ostream_insert.h:
+
+/usr/include/c++/7/bits/cxxabi_forced.h:
+
+/usr/include/c++/7/bits/range_access.h:
+
+/usr/include/c++/7/bits/basic_string.h:
+
+/usr/include/c++/7/vector:
+
+/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_awbarrier.h:
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/gthr.h:
+
+/usr/include/c++/7/bits/basic_ios.h:
+
+/usr/include/c++/7/clocale:
+
+/usr/include/pthread.h:
+
+/usr/include/linux/stddef.h:
+
+/usr/include/c++/7/ext/alloc_traits.h:
+
+/usr/include/c++/7/ext/string_conversions.h:
+
+/usr/include/linux/futex.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_bf16.hpp:
+
+/usr/include/c++/7/cstdio:
+
+/usr/include/x86_64-linux-gnu/bits/fp-fast.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__pragma_push:
+
+/usr/include/c++/7/numeric:
+
+/usr/include/x86_64-linux-gnu/bits/fp-logb.h:
+
+/usr/include/c++/7/cerrno:
+
+/home/poweruser/junda.feng/anaconda3/include/crt/host_config.h:
+
+/usr/include/stdint.h:
+
+/usr/include/c++/7/bits/stl_relops.h:
+
+/usr/include/errno.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/partitioning.h:
+
+/usr/include/c++/7/bits/invoke.h:
+
+/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/c++/7/ratio:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_scopes.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/barrier:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/atomic:
+
+/usr/include/c++/7/atomic:
+
+/usr/include/c++/7/memory:
+
+/usr/include/c++/7/bits/atomic_base.h:
+
+/usr/include/c++/7/cassert:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__config:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/cstddef:
+
+/home/poweruser/junda.feng/anaconda3/include/nv/detail/__target_macros:
+
+/home/poweruser/junda.feng/anaconda3/include/nv/detail/__preprocessor:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__undef_macros:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/cassert:
+
+/usr/include/c++/7/ext/type_traits.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/version:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__pragma_pop:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/__pragma_pop:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/helpers.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/version:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/cstdint:
+
+/usr/include/c++/7/bits/functexcept.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/climits:
+
+/usr/include/x86_64-linux-gnu/asm/types.h:
+
+/usr/include/c++/7/climits:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/climits:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/type_traits:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/type_traits:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/__threading_support:
+
+/usr/include/c++/7/bits/shared_ptr_base.h:
+
+/usr/include/c++/7/istream:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/chrono:
+
+/usr/include/c++/7/chrono:
+
+/usr/include/c++/7/ctime:
+
+/usr/include/c++/7/ext/aligned_buffer.h:
+
+/usr/include/c++/7/bits/parse_numbers.h:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
+
+/usr/include/asm-generic/int-ll64.h:
+
+/usr/include/c++/7/bits/stl_construct.h:
+
+/usr/include/c++/7/ext/concurrence.h:
+
+/usr/include/c++/7/bits/unique_ptr.h:
+
+/usr/include/c++/7/backward/auto_ptr.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/limits:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/limits:
+
+/usr/include/unistd.h:
+
+/usr/include/linux/types.h:
+
+/usr/include/x86_64-linux-gnu/bits/environments.h:
+
+/usr/include/x86_64-linux-gnu/bits/confname.h:
+
+/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_device_runtime_api.h:
+
+/usr/include/asm-generic/types.h:
+
+/usr/include/x86_64-linux-gnu/asm/posix_types.h:
+
+/usr/include/x86_64-linux-gnu/asm/posix_types_64.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups.h:
+
+/usr/include/x86_64-linux-gnu/sys/syscall.h:
+
+/usr/include/x86_64-linux-gnu/asm/unistd_64.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda_derived.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/info.h:
+
+/usr/include/c++/7/bits/allocated_ptr.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/driver_abi.h:
+
+/usr/include/c++/7/bits/move.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups/memcpy_async.h:
+
+/home/poweruser/junda.feng/anaconda3/include/sm_32_intrinsics.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cooperative_groups/details/async.h:
+
+/usr/include/x86_64-linux-gnu/bits/time.h:
+
+/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_pipeline.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_pipeline_primitives.h:
+
+/home/poweruser/junda.feng/anaconda3/include/cuda_pipeline_helpers.h:
