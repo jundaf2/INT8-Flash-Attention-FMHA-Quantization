@@ -89125,7 +89125,7 @@ __wrapper__device_stub_FMHAInferKernel(const int8_t *__restrict__ &Q, const int8
 # 46
 constexpr int TC_SIZE = 16; 
 # 47
-constexpr int WARP_SIZE_X = 4; 
+constexpr int WARP_SIZE_X = 2; 
 # 48
 constexpr int WARP_SIZE = 32; 
 # 49
@@ -89156,297 +89156,354 @@ int lane_id = tile32.thread_rank();
 int lane_id_x = lane_id % WARP_SIZE_X; 
 # 67
 int lane_id_y = lane_id / WARP_SIZE_X; 
-# 68
-int smem_lane_id_x = lane_id / TC_SIZE; 
 # 69
-int smem_lane_id_y = lane_id % TC_SIZE; 
-# 70
-int gmem_lane_id_x = lane_id % (TC_SIZE / 8); 
-# 71
-int gmem_lane_id_y = lane_id / (TC_SIZE / 8); 
-# 73
 constexpr float row_scale = (1.0F) / sqrtExpr(static_cast< float>(HEAD_DIM)); 
-# 74
+# 70
 const float scale_qk_out = ((fmha_param.q_amax) * (fmha_param.k_amax)) / ((127.0F) * (127.0F)); 
-# 76
+# 72
 int *smem_q[2]; 
-# 77
+# 73
 int *smem_k[2]; 
-# 78
+# 74
 int *smem_p; 
-# 79
+# 75
 int *smem_v[2]; 
-# 80
+# 76
 (smem_q[0]) = SLB; 
-# 81
+# 77
 (smem_q[1]) = (SLB + ((((1 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 82
+# 78
 (smem_k[0]) = (SLB + ((((2 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 83
+# 79
 (smem_k[1]) = (SLB + ((((3 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 84
+# 80
 smem_p = SLB; 
-# 85
+# 81
 (smem_v[0]) = (SLB + ((((2 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 86
+# 82
 (smem_v[1]) = (SLB + ((((3 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 88
+# 84
 for (int q_block_start = 0; q_block_start < SEQ_LEN; q_block_start += BASE_SEQ_LEN) { 
-# 89
+# 85
 int global_start_o = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (q_block_start * HEAD_DIM); 
-# 90
+# 86
 int global_start_q = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (q_block_start * HEAD_DIM); 
-# 92
-float thread_max_old = -__builtin_inff(); 
-# 93 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
-float thread_sum_old = (0); 
-# 95
+# 88
+float thread_max_old[2] = {-__builtin_inff(), -__builtin_inff()}; 
+# 89 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+float thread_sum_old[2] = {(0), (0)}; 
+# 91
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_a, 16, 16, 16, signed char, nvcuda::wmma::row_major>  q_int8_frag; 
-# 96
+# 92
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_b, 16, 16, 16, signed char, nvcuda::wmma::col_major>  k_int8_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 97
+# 93
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, int>  s_int32_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 99
+# 95
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_a, 16, 16, 16, signed char, nvcuda::wmma::row_major>  p_int8_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 100
+# 96
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_b, 16, 16, 16, signed char, nvcuda::wmma::row_major>  v_int8_frag[HEAD_DIM / TC_SIZE]; 
-# 101
+# 97
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, int>  o_int32_frag[HEAD_DIM / TC_SIZE]; 
-# 103
+# 99
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, float>  p_fp32_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 104
+# 100
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, float>  o_fp32_frag[HEAD_DIM / TC_SIZE]; 
-# 107
+# 103
 #pragma unroll
 for (
-# 107
+# 103
 int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
-# 108
+# 104
 nvcuda::wmma::fill_fragment(o_fp32_frag[xi], (0.0F)); 
-# 109
+# 105
 }  
-# 111
+# 107
 for (int k_block_start = 0; k_block_start < SEQ_LEN; k_block_start += BASE_SEQ_LEN) 
-# 112
+# 108
 { 
-# 113
+# 109
 int global_start_k = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (k_block_start * HEAD_DIM); 
-# 114
+# 110
 int global_start_v = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (k_block_start * HEAD_DIM); 
-# 115
+# 111
 int global_start_mask = (batch * (SEQ_LEN)) + k_block_start; 
-# 117
-float thread_max = -__builtin_inff(); 
-# 118 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
-float thread_sum = (0); 
-# 122
+# 113
+float thread_max[2] = {-__builtin_inff(), -__builtin_inff()}; 
+# 114 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+float thread_sum[2] = {(0), (0)}; 
+# 118
 #pragma unroll
 for (
-# 122
+# 118
 int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 123
+# 119
 nvcuda::wmma::fill_fragment(s_int32_frag[xi], 0); 
-# 124
+# 120
 }  
-# 126
+# 122
 for (int k = 0; k < (HEAD_DIM / TC_SIZE); k++) { 
+# 123
+const auto *load_gmem_addr_a = reinterpret_cast< const int8_t *>((((Q + global_start_q) + (((warp_id * TC_SIZE) + lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (lane_id_x * 8)); 
+# 124
+const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((K + global_start_k) + (((warp_id * TC_SIZE) + lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (lane_id_x * 8)); 
+# 126
+int store_smem_addr_a = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_q[k % 2])) + (((warp_id * TC_SIZE) + lane_id_y) * TC_SIZE)) + (lane_id_x * 8)); 
 # 127
-const auto *load_gmem_addr_a = reinterpret_cast< const int8_t *>((((Q + global_start_q) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (gmem_lane_id_x * 8)); 
-# 128
-const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((K + global_start_k) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (gmem_lane_id_x * 8)); 
-# 130
-int store_smem_addr_a = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_q[k % 2])) + (((warp_id * TC_SIZE) + smem_lane_id_y) * TC_SIZE)) + (smem_lane_id_x * 8)); 
-# 131
-int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_k[k % 2])) + (((warp_id * TC_SIZE) + smem_lane_id_y) * TC_SIZE)) + (smem_lane_id_x * 8)); 
-# 133
+int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_k[k % 2])) + (((warp_id * TC_SIZE) + lane_id_y) * TC_SIZE)) + (lane_id_x * 8)); 
+# 129
 __asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_a), "l" (load_gmem_addr_a), "n" (CP_SIZE_BYTE)); 
-# 134
+# 130
 __asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_b), "l" (load_gmem_addr_b), "n" (CP_SIZE_BYTE)); 
-# 136
+# 132
 __asm__("cp.async.commit_group;\n" : :); 
-# 137
+# 133
 __asm__("cp.async.wait_group 0;\n" : :); 
-# 138
+# 134
 __syncthreads(); 
-# 140
+# 136
 wmma::load_matrix_sync(q_int8_frag, &((reinterpret_cast< int8_t *>(smem_q[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
-# 141
+# 137
 for (int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 142
+# 138
 nvcuda::wmma::load_matrix_sync(k_int8_frag[xi], &((reinterpret_cast< int8_t *>(smem_k[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
-# 143
+# 139
 nvcuda::wmma::mma_sync(s_int32_frag[xi], q_int8_frag, k_int8_frag[xi], s_int32_frag[xi]); 
-# 144
+# 140
 }  
-# 145
+# 141
 }  
-# 150
+# 146
 #pragma unroll
 for (
-# 150
+# 146
 int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 152
+# 148
 #pragma unroll
 for (
+# 148
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 150
+#pragma unroll
+for (
+# 150
+int tc_xi = 0; tc_xi < 2; tc_xi++) { 
+# 151
+float tmp_max_val = row_scale * max(((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0], ((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1]); 
 # 152
-int i = 0; i < (TC_SIZE / 2); i++) { 
+(thread_max[tc_yi]) = max(thread_max[tc_yi], tmp_max_val); 
 # 153
-float tmp_max_val = row_scale * (((s_int32_frag[xi]).x)[i]); 
+}  
 # 154
-thread_max = max(thread_max, tmp_max_val); 
+}  
 # 155
 }  
-# 156
-}  
 # 159
-thread_max = max(thread_max, __shfl_xor_sync(4294967295U, thread_max, TC_SIZE)); 
-# 163
 #pragma unroll
 for (
-# 163
-int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 165
+# 159
+int s = (4 / 2); s > 0; s >>= 1) { 
+# 161
 #pragma unroll
 for (
-# 165
-int i = 0; i < (TC_SIZE / 2); i++) { 
-# 166
-float tmp_sum_val = __expf((row_scale * (((s_int32_frag[xi]).x)[i])) - thread_max); 
-# 167
-(((p_fp32_frag[xi]).x)[i]) = tmp_sum_val; 
+# 161
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 162
+(thread_max[tc_yi]) = max(thread_max[tc_yi], __shfl_xor_sync(4294967295U, thread_max[tc_yi], s)); 
+# 163
+}  
+# 164
+}  
 # 168
-thread_sum += (((p_fp32_frag[xi]).x)[i]); 
-# 169
-}  
-# 170
-}  
-# 173
-thread_sum += __shfl_xor_sync(4294967295U, thread_sum, TC_SIZE); 
-# 176
 #pragma unroll
 for (
-# 176
+# 168
 int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 178
+# 170
 #pragma unroll
 for (
+# 170
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 172
+#pragma unroll
+for (
+# 172
+int tc_xi = 0; tc_xi < 2; tc_xi++) { 
+# 173
+float tmp_sum_val_0 = __expf((row_scale * (((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0])) - (thread_max[tc_yi])); 
+# 174
+float tmp_sum_val_1 = __expf((row_scale * (((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1])) - (thread_max[tc_yi])); 
+# 175
+(((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0]) = tmp_sum_val_0; 
+# 176
+(((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1]) = tmp_sum_val_1; 
+# 177
+(thread_sum[tc_yi]) += ((((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0]) + (((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1])); 
 # 178
-int i = 0; i < (TC_SIZE / 2); i++) { 
+}  
 # 179
-const float softmax_out_scale = (-(128.0F)); 
+}  
 # 180
-(((p_int8_frag[xi]).x)[i]) = __float2int_rn(max(min(softmax_out_scale * (((p_fp32_frag[xi]).x)[i]), (0.0F)), -(128.0F))); 
-# 181
 }  
-# 182
-}  
-# 187
+# 184
 #pragma unroll
 for (
+# 184
+int s = (4 / 2); s > 0; s >>= 1) { 
+# 186
+#pragma unroll
+for (
+# 186
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
 # 187
-int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+(thread_sum[tc_yi]) += __shfl_xor_sync(4294967295U, thread_sum[tc_yi], s); 
 # 188
-nvcuda::wmma::fill_fragment(o_int32_frag[xi], 0); 
+}  
 # 189
 }  
-# 191
-for (int k = 0; k < (BASE_SEQ_LEN / TC_SIZE); k++) { 
 # 192
-const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((V + global_start_v) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (gmem_lane_id_x * 8)); 
+#pragma unroll
+for (
+# 192
+int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
 # 194
-int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_v[k % 2])) + (((warp_id * TC_SIZE) + smem_lane_id_y) * TC_SIZE)) + (smem_lane_id_x * 8)); 
+#pragma unroll
+for (
+# 194
+int i = 0; i < 8; i++) { 
+# 195
+const float softmax_out_scale = (-(128.0F)); 
 # 196
-__asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_b), "l" (load_gmem_addr_b), "n" (CP_SIZE_BYTE)); 
+(((p_int8_frag[xi]).x)[i]) = __float2int_rn(max(min(softmax_out_scale * (((p_fp32_frag[xi]).x)[i]), (0.0F)), -(128.0F))); 
+# 197
+}  
 # 198
-__asm__("cp.async.commit_group;\n" : :); 
-# 199
-__asm__("cp.async.wait_group 0;\n" : :); 
-# 200
-__syncthreads(); 
-# 202
-for (int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+}  
 # 203
-nvcuda::wmma::load_matrix_sync(v_int8_frag[xi], &((reinterpret_cast< int8_t *>(smem_v[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
+#pragma unroll
+for (
+# 203
+int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
 # 204
-nvcuda::wmma::mma_sync(o_int32_frag[xi], p_int8_frag[k], v_int8_frag[xi], o_int32_frag[xi]); 
+nvcuda::wmma::fill_fragment(o_int32_frag[xi], 0); 
 # 205
 }  
-# 206
-}  
+# 207
+for (int k = 0; k < (BASE_SEQ_LEN / TC_SIZE); k++) { 
 # 208
-const float scale_o_fp32 = (-(1.0F)); 
-# 209
-float thread_max_new = max(thread_max_old, thread_max); 
+const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((V + global_start_v) + (((warp_id * TC_SIZE) + lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (lane_id_x * 8)); 
 # 210
-float exp_max_old = __expf(thread_max_old - thread_max_new); 
-# 211
-float exp_max = __expf(thread_max - thread_max_new); 
+int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_v[k % 2])) + (((warp_id * TC_SIZE) + lane_id_y) * TC_SIZE)) + (lane_id_x * 8)); 
 # 212
-float thread_sum_new = (exp_max_old * thread_sum_old) + (exp_max * thread_sum); 
+__asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_b), "l" (load_gmem_addr_b), "n" (CP_SIZE_BYTE)); 
+# 214
+__asm__("cp.async.commit_group;\n" : :); 
 # 215
-#pragma unroll
-for (
-# 215
-int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
-# 217
-#pragma unroll
-for (
-# 217
-int i = 0; i < (TC_SIZE / 2); i++) { 
+__asm__("cp.async.wait_group 0;\n" : :); 
+# 216
+__syncthreads(); 
 # 218
-(((o_fp32_frag[xi]).x)[i]) = (__frcp_rn(thread_sum_new) * (((thread_sum_old * exp_max_old) * (((o_fp32_frag[xi]).x)[i])) + (exp_max * (scale_o_fp32 * (((o_int32_frag[xi]).x)[i]))))); 
+for (int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
 # 219
-}  
+nvcuda::wmma::load_matrix_sync(v_int8_frag[xi], &((reinterpret_cast< int8_t *>(smem_v[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
 # 220
+nvcuda::wmma::mma_sync(o_int32_frag[xi], p_int8_frag[k], v_int8_frag[xi], o_int32_frag[xi]); 
+# 221
 }  
 # 222
-thread_sum_old = thread_sum_new; 
-# 223
-thread_max_old = thread_max_new; 
-# 224
 }  
+# 224
+const float scale_o_fp32 = (-(1.0F)); 
 # 226
-uint8_t o_int8_frag[HEAD_DIM / TC_SIZE][(TC_SIZE / 2)]; 
+#pragma unroll
+for (
+# 226
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 227
+float thread_max_new = max(thread_max_old[tc_yi], thread_max[tc_yi]); 
 # 228
-const float scale_v_out = (fmha_param.v_amax) * __frcp_rn((fmha_param.r_amax) * (128.0F)); 
+float exp_max_old = __expf((thread_max_old[tc_yi]) - thread_max_new); 
+# 229
+float exp_max = __expf((thread_max[tc_yi]) - thread_max_new); 
 # 230
-#pragma unroll
-for (
-# 230
-int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+float thread_sum_new = (exp_max_old * (thread_sum_old[tc_yi])) + (exp_max * (thread_sum[tc_yi])); 
 # 232
 #pragma unroll
 for (
 # 232
-int i = 0; i < (TC_SIZE / 2); i++) { 
-# 233
-int8_t tmp_val = __float2int_rn(max(min(scale_v_out * (((o_fp32_frag[xi]).x)[i]), (127.0F)), -(127.0F))); 
+int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
 # 234
-((o_int8_frag[xi])[i]) = (*(reinterpret_cast< uint8_t *>(&tmp_val))); 
+#pragma unroll
+for (
+# 234
+int tc_xi = 0; tc_xi < 2; tc_xi++) { 
 # 235
+(((o_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + tc_xi]) = (__frcp_rn(thread_sum_new) * ((((thread_sum_old[tc_yi]) * exp_max_old) * (((o_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + tc_xi])) + (exp_max * (scale_o_fp32 * (((o_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + tc_xi]))))); 
+# 236
+}  
+# 237
 }  
 # 238
-auto *store_gmem_addr = reinterpret_cast< uint2 *>((((O + global_start_o) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (xi * TC_SIZE)) + (gmem_lane_id_x * 8)); 
+(thread_sum_old[tc_yi]) = thread_sum_new; 
+# 239
+(thread_max_old[tc_yi]) = thread_max_new; 
 # 240
-uint2 tmp_vr; 
+}  
 # 241
-(tmp_vr.x) = (((((o_int8_frag[xi])[0]) + (((o_int8_frag[xi])[1]) << 8)) + (((o_int8_frag[xi])[2]) << 16)) + (((o_int8_frag[xi])[3]) << 24)); 
-# 242
-(tmp_vr.y) = (((((o_int8_frag[xi])[4]) + (((o_int8_frag[xi])[5]) << 8)) + (((o_int8_frag[xi])[6]) << 16)) + (((o_int8_frag[xi])[7]) << 24)); 
+}  
+# 243
+uint8_t o_int8_frag[HEAD_DIM / TC_SIZE][(TC_SIZE / 2)]; 
 # 244
-(*store_gmem_addr) = tmp_vr; 
+int gmem_lane_id_x = lane_id % 4; 
 # 245
-}  
+int gmem_lane_id_y = lane_id / 4; 
 # 247
+const float scale_v_out = (fmha_param.v_amax) * __frcp_rn((fmha_param.r_amax) * (128.0F)); 
+# 249
+#pragma unroll
+for (
+# 249
+int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+# 251
+#pragma unroll
+for (
+# 251
+int i = 0; i < (TC_SIZE / 2); i++) { 
+# 252
+int8_t tmp_val = __float2int_rn(max(min(scale_v_out * (((o_fp32_frag[xi]).x)[i]), (127.0F)), -(127.0F))); 
+# 253
+((o_int8_frag[xi])[i]) = (*(reinterpret_cast< uint8_t *>(&tmp_val))); 
+# 254
 }  
-# 248
+# 256
+for (int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 257
+for (int tc_xi = 0; tc_xi < 2; tc_xi++) { 
+# 258
+auto *store_gmem_addr = reinterpret_cast< char2 *>(((((O + global_start_o) + ((((warp_id * TC_SIZE) + ((tc_yi * TC_SIZE) / 2)) + gmem_lane_id_y) * HEAD_DIM)) + (xi * TC_SIZE)) + ((tc_xi * TC_SIZE) / 2)) + (gmem_lane_id_x * 2)); 
+# 259
+char2 tmp_char2; 
+# 260
+(tmp_char2.x) = ((o_int8_frag[xi])[((tc_xi * 4) + (tc_yi * 2)) + 0]); 
+# 261
+(tmp_char2.y) = ((o_int8_frag[xi])[((tc_xi * 4) + (tc_yi * 2)) + 1]); 
+# 262
+(*store_gmem_addr) = tmp_char2; 
+# 263
+}  
+# 264
+}  
+# 265
+}  
+# 267
+}  
+# 268
 } 
 #endif
 # 43 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
 template< int HEAD_DIM, int BASE_SEQ_LEN, int SEQ_LEN, int NUM_WARPS, bool USE_TCU>  __noinline__ typename std::enable_if< (USE_TCU) == (true), void> ::type 
 # 45
 FMHAInferKernel(const int8_t *__restrict__ Q, const int8_t *__restrict__ K, const int8_t *__restrict__ V, const int8_t *padding_mask, int8_t *__restrict__ O, FMHAParamI8 fmha_param) {::gpuImpl::kernel::__wrapper__device_stub_FMHAInferKernel<HEAD_DIM,BASE_SEQ_LEN,SEQ_LEN,NUM_WARPS,USE_TCU>(Q,K,V,padding_mask,O,fmha_param);
-# 248 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+# 268 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
 return;}
 #if 0
 # 45 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
@@ -89454,7 +89511,7 @@ return;}
 # 46
 constexpr int TC_SIZE = 16; 
 # 47
-constexpr int WARP_SIZE_X = 4; 
+constexpr int WARP_SIZE_X = 2; 
 # 48
 constexpr int WARP_SIZE = 32; 
 # 49
@@ -89485,325 +89542,382 @@ int lane_id = tile32.thread_rank();
 int lane_id_x = lane_id % WARP_SIZE_X; 
 # 67
 int lane_id_y = lane_id / WARP_SIZE_X; 
-# 68
-int smem_lane_id_x = lane_id / TC_SIZE; 
 # 69
-int smem_lane_id_y = lane_id % TC_SIZE; 
-# 70
-int gmem_lane_id_x = lane_id % (TC_SIZE / 8); 
-# 71
-int gmem_lane_id_y = lane_id / (TC_SIZE / 8); 
-# 73
 constexpr float row_scale = (1.0F) / sqrtExpr(static_cast< float>(HEAD_DIM)); 
-# 74
+# 70
 const float scale_qk_out = ((fmha_param.q_amax) * (fmha_param.k_amax)) / ((127.0F) * (127.0F)); 
-# 76
+# 72
 int *smem_q[2]; 
-# 77
+# 73
 int *smem_k[2]; 
-# 78
+# 74
 int *smem_p; 
-# 79
+# 75
 int *smem_v[2]; 
-# 80
+# 76
 (smem_q[0]) = SLB; 
-# 81
+# 77
 (smem_q[1]) = (SLB + ((((1 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 82
+# 78
 (smem_k[0]) = (SLB + ((((2 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 83
+# 79
 (smem_k[1]) = (SLB + ((((3 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 84
+# 80
 smem_p = SLB; 
-# 85
+# 81
 (smem_v[0]) = (SLB + ((((2 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 86
+# 82
 (smem_v[1]) = (SLB + ((((3 * BASE_SEQ_LEN) * TC_SIZE) * sizeof(int8_t)) / sizeof(int32_t))); 
-# 88
+# 84
 for (int q_block_start = 0; q_block_start < SEQ_LEN; q_block_start += BASE_SEQ_LEN) { 
-# 89
+# 85
 int global_start_o = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (q_block_start * HEAD_DIM); 
-# 90
+# 86
 int global_start_q = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (q_block_start * HEAD_DIM); 
-# 92
-float thread_max_old = -__builtin_inff(); 
-# 93 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
-float thread_sum_old = (0); 
-# 95
+# 88
+float thread_max_old[2] = {-__builtin_inff(), -__builtin_inff()}; 
+# 89 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+float thread_sum_old[2] = {(0), (0)}; 
+# 91
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_a, 16, 16, 16, signed char, nvcuda::wmma::row_major>  q_int8_frag; 
-# 96
+# 92
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_b, 16, 16, 16, signed char, nvcuda::wmma::col_major>  k_int8_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 97
+# 93
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, int>  s_int32_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 99
+# 95
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_a, 16, 16, 16, signed char, nvcuda::wmma::row_major>  p_int8_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 100
+# 96
 nvcuda::wmma::fragment< nvcuda::wmma::matrix_b, 16, 16, 16, signed char, nvcuda::wmma::row_major>  v_int8_frag[HEAD_DIM / TC_SIZE]; 
-# 101
+# 97
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, int>  o_int32_frag[HEAD_DIM / TC_SIZE]; 
-# 103
+# 99
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, float>  p_fp32_frag[BASE_SEQ_LEN / TC_SIZE]; 
-# 104
+# 100
 nvcuda::wmma::fragment< nvcuda::wmma::accumulator, 16, 16, 16, float>  o_fp32_frag[HEAD_DIM / TC_SIZE]; 
-# 107
+# 103
 #pragma unroll
 for (
-# 107
+# 103
 int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
-# 108
+# 104
 nvcuda::wmma::fill_fragment(o_fp32_frag[xi], (0.0F)); 
-# 109
+# 105
 }  
-# 111
+# 107
 for (int k_block_start = 0; k_block_start < SEQ_LEN; k_block_start += BASE_SEQ_LEN) 
-# 112
+# 108
 { 
-# 113
+# 109
 int global_start_k = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (k_block_start * HEAD_DIM); 
-# 114
+# 110
 int global_start_v = ((((batch * head_num) + head) * (SEQ_LEN)) * (HEAD_DIM)) + (k_block_start * HEAD_DIM); 
-# 115
+# 111
 int global_start_mask = (batch * (SEQ_LEN)) + k_block_start; 
-# 117
-float thread_max = -__builtin_inff(); 
-# 118 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
-float thread_sum = (0); 
-# 122
+# 113
+float thread_max[2] = {-__builtin_inff(), -__builtin_inff()}; 
+# 114 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+float thread_sum[2] = {(0), (0)}; 
+# 118
 #pragma unroll
 for (
-# 122
+# 118
 int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 123
+# 119
 nvcuda::wmma::fill_fragment(s_int32_frag[xi], 0); 
-# 124
+# 120
 }  
-# 126
+# 122
 for (int k = 0; k < (HEAD_DIM / TC_SIZE); k++) { 
+# 123
+const auto *load_gmem_addr_a = reinterpret_cast< const int8_t *>((((Q + global_start_q) + (((warp_id * TC_SIZE) + lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (lane_id_x * 8)); 
+# 124
+const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((K + global_start_k) + (((warp_id * TC_SIZE) + lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (lane_id_x * 8)); 
+# 126
+int store_smem_addr_a = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_q[k % 2])) + (((warp_id * TC_SIZE) + lane_id_y) * TC_SIZE)) + (lane_id_x * 8)); 
 # 127
-const auto *load_gmem_addr_a = reinterpret_cast< const int8_t *>((((Q + global_start_q) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (gmem_lane_id_x * 8)); 
-# 128
-const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((K + global_start_k) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (gmem_lane_id_x * 8)); 
-# 130
-int store_smem_addr_a = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_q[k % 2])) + (((warp_id * TC_SIZE) + smem_lane_id_y) * TC_SIZE)) + (smem_lane_id_x * 8)); 
-# 131
-int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_k[k % 2])) + (((warp_id * TC_SIZE) + smem_lane_id_y) * TC_SIZE)) + (smem_lane_id_x * 8)); 
-# 133
+int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_k[k % 2])) + (((warp_id * TC_SIZE) + lane_id_y) * TC_SIZE)) + (lane_id_x * 8)); 
+# 129
 __asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_a), "l" (load_gmem_addr_a), "n" (CP_SIZE_BYTE)); 
-# 134
+# 130
 __asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_b), "l" (load_gmem_addr_b), "n" (CP_SIZE_BYTE)); 
-# 136
+# 132
 __asm__("cp.async.commit_group;\n" : :); 
-# 137
+# 133
 __asm__("cp.async.wait_group 0;\n" : :); 
-# 138
+# 134
 __syncthreads(); 
-# 140
+# 136
 wmma::load_matrix_sync(q_int8_frag, &((reinterpret_cast< int8_t *>(smem_q[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
-# 141
+# 137
 for (int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 142
+# 138
 nvcuda::wmma::load_matrix_sync(k_int8_frag[xi], &((reinterpret_cast< int8_t *>(smem_k[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
-# 143
+# 139
 nvcuda::wmma::mma_sync(s_int32_frag[xi], q_int8_frag, k_int8_frag[xi], s_int32_frag[xi]); 
-# 144
+# 140
 }  
-# 145
+# 141
 }  
-# 150
+# 146
 #pragma unroll
 for (
-# 150
+# 146
 int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 152
+# 148
 #pragma unroll
 for (
+# 148
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 150
+#pragma unroll
+for (
+# 150
+int tc_xi = 0; tc_xi < 2; tc_xi++) { 
+# 151
+float tmp_max_val = row_scale * max(((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0], ((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1]); 
 # 152
-int i = 0; i < (TC_SIZE / 2); i++) { 
+(thread_max[tc_yi]) = max(thread_max[tc_yi], tmp_max_val); 
 # 153
-float tmp_max_val = row_scale * (((s_int32_frag[xi]).x)[i]); 
+}  
 # 154
-thread_max = max(thread_max, tmp_max_val); 
+}  
 # 155
 }  
-# 156
-}  
 # 159
-thread_max = max(thread_max, __shfl_xor_sync(4294967295U, thread_max, TC_SIZE)); 
-# 163
 #pragma unroll
 for (
-# 163
-int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 165
+# 159
+int s = (4 / 2); s > 0; s >>= 1) { 
+# 161
 #pragma unroll
 for (
-# 165
-int i = 0; i < (TC_SIZE / 2); i++) { 
-# 166
-float tmp_sum_val = __expf((row_scale * (((s_int32_frag[xi]).x)[i])) - thread_max); 
-# 167
-(((p_fp32_frag[xi]).x)[i]) = tmp_sum_val; 
+# 161
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 162
+(thread_max[tc_yi]) = max(thread_max[tc_yi], __shfl_xor_sync(4294967295U, thread_max[tc_yi], s)); 
+# 163
+}  
+# 164
+}  
 # 168
-thread_sum += (((p_fp32_frag[xi]).x)[i]); 
-# 169
-}  
-# 170
-}  
-# 173
-thread_sum += __shfl_xor_sync(4294967295U, thread_sum, TC_SIZE); 
-# 176
 #pragma unroll
 for (
-# 176
+# 168
 int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
-# 178
+# 170
 #pragma unroll
 for (
+# 170
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 172
+#pragma unroll
+for (
+# 172
+int tc_xi = 0; tc_xi < 2; tc_xi++) { 
+# 173
+float tmp_sum_val_0 = __expf((row_scale * (((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0])) - (thread_max[tc_yi])); 
+# 174
+float tmp_sum_val_1 = __expf((row_scale * (((s_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1])) - (thread_max[tc_yi])); 
+# 175
+(((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0]) = tmp_sum_val_0; 
+# 176
+(((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1]) = tmp_sum_val_1; 
+# 177
+(thread_sum[tc_yi]) += ((((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 0]) + (((p_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + 1])); 
 # 178
-int i = 0; i < (TC_SIZE / 2); i++) { 
+}  
 # 179
-const float softmax_out_scale = (-(128.0F)); 
+}  
 # 180
-(((p_int8_frag[xi]).x)[i]) = __float2int_rn(max(min(softmax_out_scale * (((p_fp32_frag[xi]).x)[i]), (0.0F)), -(128.0F))); 
-# 181
 }  
-# 182
-}  
-# 187
+# 184
 #pragma unroll
 for (
+# 184
+int s = (4 / 2); s > 0; s >>= 1) { 
+# 186
+#pragma unroll
+for (
+# 186
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
 # 187
-int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+(thread_sum[tc_yi]) += __shfl_xor_sync(4294967295U, thread_sum[tc_yi], s); 
 # 188
-nvcuda::wmma::fill_fragment(o_int32_frag[xi], 0); 
+}  
 # 189
 }  
-# 191
-for (int k = 0; k < (BASE_SEQ_LEN / TC_SIZE); k++) { 
 # 192
-const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((V + global_start_v) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (gmem_lane_id_x * 8)); 
+#pragma unroll
+for (
+# 192
+int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
 # 194
-int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_v[k % 2])) + (((warp_id * TC_SIZE) + smem_lane_id_y) * TC_SIZE)) + (smem_lane_id_x * 8)); 
+#pragma unroll
+for (
+# 194
+int i = 0; i < 8; i++) { 
+# 195
+const float softmax_out_scale = (-(128.0F)); 
 # 196
-__asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_b), "l" (load_gmem_addr_b), "n" (CP_SIZE_BYTE)); 
+(((p_int8_frag[xi]).x)[i]) = __float2int_rn(max(min(softmax_out_scale * (((p_fp32_frag[xi]).x)[i]), (0.0F)), -(128.0F))); 
+# 197
+}  
 # 198
-__asm__("cp.async.commit_group;\n" : :); 
-# 199
-__asm__("cp.async.wait_group 0;\n" : :); 
-# 200
-__syncthreads(); 
-# 202
-for (int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+}  
 # 203
-nvcuda::wmma::load_matrix_sync(v_int8_frag[xi], &((reinterpret_cast< int8_t *>(smem_v[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
+#pragma unroll
+for (
+# 203
+int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
 # 204
-nvcuda::wmma::mma_sync(o_int32_frag[xi], p_int8_frag[k], v_int8_frag[xi], o_int32_frag[xi]); 
+nvcuda::wmma::fill_fragment(o_int32_frag[xi], 0); 
 # 205
 }  
-# 206
-}  
+# 207
+for (int k = 0; k < (BASE_SEQ_LEN / TC_SIZE); k++) { 
 # 208
-const float scale_o_fp32 = (-(1.0F)); 
-# 209
-float thread_max_new = max(thread_max_old, thread_max); 
+const auto *load_gmem_addr_b = reinterpret_cast< const int8_t *>((((V + global_start_v) + (((warp_id * TC_SIZE) + lane_id_y) * HEAD_DIM)) + (k * TC_SIZE)) + (lane_id_x * 8)); 
 # 210
-float exp_max_old = __expf(thread_max_old - thread_max_new); 
-# 211
-float exp_max = __expf(thread_max - thread_max_new); 
+int store_smem_addr_b = __cvta_generic_to_shared(((reinterpret_cast< int8_t *>(smem_v[k % 2])) + (((warp_id * TC_SIZE) + lane_id_y) * TC_SIZE)) + (lane_id_x * 8)); 
 # 212
-float thread_sum_new = (exp_max_old * thread_sum_old) + (exp_max * thread_sum); 
+__asm__ volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" : : "r" (store_smem_addr_b), "l" (load_gmem_addr_b), "n" (CP_SIZE_BYTE)); 
+# 214
+__asm__("cp.async.commit_group;\n" : :); 
 # 215
-#pragma unroll
-for (
-# 215
-int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
-# 217
-#pragma unroll
-for (
-# 217
-int i = 0; i < (TC_SIZE / 2); i++) { 
+__asm__("cp.async.wait_group 0;\n" : :); 
+# 216
+__syncthreads(); 
 # 218
-(((o_fp32_frag[xi]).x)[i]) = (__frcp_rn(thread_sum_new) * (((thread_sum_old * exp_max_old) * (((o_fp32_frag[xi]).x)[i])) + (exp_max * (scale_o_fp32 * (((o_int32_frag[xi]).x)[i]))))); 
+for (int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
 # 219
-}  
+nvcuda::wmma::load_matrix_sync(v_int8_frag[xi], &((reinterpret_cast< int8_t *>(smem_v[k % 2]))[(warp_id * TC_SIZE) * TC_SIZE]), TC_SIZE); 
 # 220
+nvcuda::wmma::mma_sync(o_int32_frag[xi], p_int8_frag[k], v_int8_frag[xi], o_int32_frag[xi]); 
+# 221
 }  
 # 222
-thread_sum_old = thread_sum_new; 
-# 223
-thread_max_old = thread_max_new; 
-# 224
 }  
+# 224
+const float scale_o_fp32 = (-(1.0F)); 
 # 226
-uint8_t o_int8_frag[HEAD_DIM / TC_SIZE][(TC_SIZE / 2)]; 
+#pragma unroll
+for (
+# 226
+int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 227
+float thread_max_new = max(thread_max_old[tc_yi], thread_max[tc_yi]); 
 # 228
-const float scale_v_out = (fmha_param.v_amax) * __frcp_rn((fmha_param.r_amax) * (128.0F)); 
+float exp_max_old = __expf((thread_max_old[tc_yi]) - thread_max_new); 
+# 229
+float exp_max = __expf((thread_max[tc_yi]) - thread_max_new); 
 # 230
-#pragma unroll
-for (
-# 230
-int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+float thread_sum_new = (exp_max_old * (thread_sum_old[tc_yi])) + (exp_max * (thread_sum[tc_yi])); 
 # 232
 #pragma unroll
 for (
 # 232
-int i = 0; i < (TC_SIZE / 2); i++) { 
-# 233
-int8_t tmp_val = __float2int_rn(max(min(scale_v_out * (((o_fp32_frag[xi]).x)[i]), (127.0F)), -(127.0F))); 
+int xi = 0; xi < (BASE_SEQ_LEN / TC_SIZE); xi++) { 
 # 234
-((o_int8_frag[xi])[i]) = (*(reinterpret_cast< uint8_t *>(&tmp_val))); 
+#pragma unroll
+for (
+# 234
+int tc_xi = 0; tc_xi < 2; tc_xi++) { 
 # 235
+(((o_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + tc_xi]) = (__frcp_rn(thread_sum_new) * ((((thread_sum_old[tc_yi]) * exp_max_old) * (((o_fp32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + tc_xi])) + (exp_max * (scale_o_fp32 * (((o_int32_frag[xi]).x)[((tc_xi * 4) + (tc_yi * 2)) + tc_xi]))))); 
+# 236
+}  
+# 237
 }  
 # 238
-auto *store_gmem_addr = reinterpret_cast< uint2 *>((((O + global_start_o) + (((warp_id * TC_SIZE) + gmem_lane_id_y) * HEAD_DIM)) + (xi * TC_SIZE)) + (gmem_lane_id_x * 8)); 
+(thread_sum_old[tc_yi]) = thread_sum_new; 
+# 239
+(thread_max_old[tc_yi]) = thread_max_new; 
 # 240
-uint2 tmp_vr; 
+}  
 # 241
-(tmp_vr.x) = (((((o_int8_frag[xi])[0]) + (((o_int8_frag[xi])[1]) << 8)) + (((o_int8_frag[xi])[2]) << 16)) + (((o_int8_frag[xi])[3]) << 24)); 
-# 242
-(tmp_vr.y) = (((((o_int8_frag[xi])[4]) + (((o_int8_frag[xi])[5]) << 8)) + (((o_int8_frag[xi])[6]) << 16)) + (((o_int8_frag[xi])[7]) << 24)); 
+}  
+# 243
+uint8_t o_int8_frag[HEAD_DIM / TC_SIZE][(TC_SIZE / 2)]; 
 # 244
-(*store_gmem_addr) = tmp_vr; 
+int gmem_lane_id_x = lane_id % 4; 
 # 245
-}  
+int gmem_lane_id_y = lane_id / 4; 
 # 247
+const float scale_v_out = (fmha_param.v_amax) * __frcp_rn((fmha_param.r_amax) * (128.0F)); 
+# 249
+#pragma unroll
+for (
+# 249
+int xi = 0; xi < (HEAD_DIM / TC_SIZE); xi++) { 
+# 251
+#pragma unroll
+for (
+# 251
+int i = 0; i < (TC_SIZE / 2); i++) { 
+# 252
+int8_t tmp_val = __float2int_rn(max(min(scale_v_out * (((o_fp32_frag[xi]).x)[i]), (127.0F)), -(127.0F))); 
+# 253
+((o_int8_frag[xi])[i]) = (*(reinterpret_cast< uint8_t *>(&tmp_val))); 
+# 254
 }  
-# 248
+# 256
+for (int tc_yi = 0; tc_yi < 2; tc_yi++) { 
+# 257
+for (int tc_xi = 0; tc_xi < 2; tc_xi++) { 
+# 258
+auto *store_gmem_addr = reinterpret_cast< char2 *>(((((O + global_start_o) + ((((warp_id * TC_SIZE) + ((tc_yi * TC_SIZE) / 2)) + gmem_lane_id_y) * HEAD_DIM)) + (xi * TC_SIZE)) + ((tc_xi * TC_SIZE) / 2)) + (gmem_lane_id_x * 2)); 
+# 259
+char2 tmp_char2; 
+# 260
+(tmp_char2.x) = ((o_int8_frag[xi])[((tc_xi * 4) + (tc_yi * 2)) + 0]); 
+# 261
+(tmp_char2.y) = ((o_int8_frag[xi])[((tc_xi * 4) + (tc_yi * 2)) + 1]); 
+# 262
+(*store_gmem_addr) = tmp_char2; 
+# 263
+}  
+# 264
+}  
+# 265
+}  
+# 267
+}  
+# 268
 } 
 #endif
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
-# 251 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+# 271 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
 template< int HEAD_DIM, int BASE_SEQ_LEN, int SEQ_LEN, int NUM_WARPS, bool USE_TCU> static typename std::enable_if< (USE_TCU) == (false), void> ::type 
-# 253
+# 273
 __wrapper__device_stub_FMHAInferKernel(const int8_t *__restrict__ &Q, const int8_t *__restrict__ &K, const int8_t *__restrict__ &V, const int8_t *&padding_mask, int8_t *__restrict__ &O, FMHAParamI8 &fmha_param) { ::cudaLaunchKernel(0, 0, 0, 0, 0, 0);}
 #pragma GCC diagnostic pop
 
 #if 0
-# 254
+# 274
 { 
-# 256
+# 276
 } 
 #endif
-# 251 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+# 271 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
 template< int HEAD_DIM, int BASE_SEQ_LEN, int SEQ_LEN, int NUM_WARPS, bool USE_TCU>  __noinline__ typename std::enable_if< (USE_TCU) == (false), void> ::type 
-# 253
+# 273
 FMHAInferKernel(const int8_t *__restrict__ Q, const int8_t *__restrict__ K, const int8_t *__restrict__ V, const int8_t *padding_mask, int8_t *__restrict__ O, FMHAParamI8 fmha_param) 
-# 254
+# 274
 {::gpuImpl::kernel::__wrapper__device_stub_FMHAInferKernel<HEAD_DIM,BASE_SEQ_LEN,SEQ_LEN,NUM_WARPS,USE_TCU>(Q,K,V,padding_mask,O,fmha_param);
-# 256
+# 276
 return;}
 #if 0
-# 254
+# 274
 { 
-# 256
+# 276
 } 
 #endif
-# 259 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+# 279 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
 }
-# 260
+# 280
 }
 # 5 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.h"
 namespace gpuImpl { 

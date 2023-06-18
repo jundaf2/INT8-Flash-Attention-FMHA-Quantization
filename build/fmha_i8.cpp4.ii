@@ -83639,7 +83639,7 @@ template <int HEAD_DIM, int BASE_SEQ_LEN, int SEQ_LEN, int NUM_WARPS, bool USE_T
 __attribute__((global)) typename std::enable_if<(USE_TCU==true), void>::type
 FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, const int8_t * __restrict__ V, const int8_t *padding_mask, int8_t * __restrict__ O, FMHAParamI8 fmha_param){
   constexpr int TC_SIZE = 16;
-  constexpr int WARP_SIZE_X = 4;
+  constexpr int WARP_SIZE_X = 2;
   constexpr int WARP_SIZE = 32;
   constexpr int CP_SIZE_BYTE = 8;
   static_assert(NUM_WARPS == 8);
@@ -83660,10 +83660,6 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
 
   int lane_id_x = lane_id % (WARP_SIZE_X);
   int lane_id_y = lane_id / (WARP_SIZE_X);
-  int smem_lane_id_x = lane_id / TC_SIZE;
-  int smem_lane_id_y = lane_id % TC_SIZE;
-  int gmem_lane_id_x = lane_id % (TC_SIZE / 8);
-  int gmem_lane_id_y = lane_id / (TC_SIZE / 8);
 
   constexpr float row_scale = 1.0f/sqrtExpr(static_cast<float>(HEAD_DIM));
   const float scale_qk_out = fmha_param.q_amax * fmha_param.k_amax / (127.f * 127.f);
@@ -83684,12 +83680,16 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
     int global_start_o = (batch * head_num + head) * SEQ_LEN * HEAD_DIM + q_block_start*HEAD_DIM;
     int global_start_q = (batch * head_num + head) * SEQ_LEN * HEAD_DIM + q_block_start*HEAD_DIM;
 
-    float thread_max_old = -
-# 92 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh" 3 4
-                           (__builtin_inff ())
-# 92 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
-                                   ;
-    float thread_sum_old = 0;
+    float thread_max_old[2] = {-
+# 88 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh" 3 4
+                               (__builtin_inff ())
+# 88 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+                                       , -
+# 88 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh" 3 4
+                                          (__builtin_inff ())
+# 88 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+                                                  };
+    float thread_sum_old[2] = {0, 0};
 
     wmma::fragment<wmma::matrix_a, TC_SIZE, TC_SIZE, TC_SIZE, int8_t, wmma::row_major> q_int8_frag;
     wmma::fragment<wmma::matrix_b, TC_SIZE, TC_SIZE, TC_SIZE, int8_t, wmma::col_major> k_int8_frag[BASE_SEQ_LEN/TC_SIZE];
@@ -83713,12 +83713,16 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
       int global_start_v = (batch * head_num + head) * SEQ_LEN * HEAD_DIM + k_block_start*HEAD_DIM;
       int global_start_mask = batch*SEQ_LEN + k_block_start;
 
-      float thread_max = -
-# 117 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh" 3 4
-                         (__builtin_inff ())
-# 117 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
-                                 ;
-      float thread_sum = 0;
+      float thread_max[2] = {-
+# 113 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh" 3 4
+                             (__builtin_inff ())
+# 113 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+                                     , -
+# 113 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh" 3 4
+                                        (__builtin_inff ())
+# 113 "/home/poweruser/junda.feng/INT8-Flash-Attention-FMHA-Quantization/inc/fmha_i8.cuh"
+                                                };
+      float thread_sum[2] = {0, 0};
 
 
 #pragma unroll
@@ -83727,11 +83731,11 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
       }
 
       for(int k=0; k<(HEAD_DIM/TC_SIZE); k++){
-        const auto* load_gmem_addr_a = reinterpret_cast<const int8_t*>(Q + global_start_q + (warp_id*TC_SIZE + gmem_lane_id_y) * HEAD_DIM + k*TC_SIZE + gmem_lane_id_x*8);
-        const auto* load_gmem_addr_b = reinterpret_cast<const int8_t*>(K + global_start_k + (warp_id*TC_SIZE + gmem_lane_id_y) * HEAD_DIM + k*TC_SIZE + gmem_lane_id_x*8);
+        const auto* load_gmem_addr_a = reinterpret_cast<const int8_t*>(Q + global_start_q + (warp_id*TC_SIZE + lane_id_y) * HEAD_DIM + k*TC_SIZE + lane_id_x*8);
+        const auto* load_gmem_addr_b = reinterpret_cast<const int8_t*>(K + global_start_k + (warp_id*TC_SIZE + lane_id_y) * HEAD_DIM + k*TC_SIZE + lane_id_x*8);
 
-        int store_smem_addr_a = __cvta_generic_to_shared(reinterpret_cast<int8_t*>(smem_q[k%2]) + (warp_id*TC_SIZE + smem_lane_id_y)*TC_SIZE + smem_lane_id_x*8);
-        int store_smem_addr_b = __cvta_generic_to_shared(reinterpret_cast<int8_t*>(smem_k[k%2]) + (warp_id*TC_SIZE + smem_lane_id_y)*TC_SIZE + smem_lane_id_x*8);
+        int store_smem_addr_a = __cvta_generic_to_shared(reinterpret_cast<int8_t*>(smem_q[k%2]) + (warp_id*TC_SIZE + lane_id_y)*TC_SIZE + lane_id_x*8);
+        int store_smem_addr_b = __cvta_generic_to_shared(reinterpret_cast<int8_t*>(smem_k[k%2]) + (warp_id*TC_SIZE + lane_id_y)*TC_SIZE + lane_id_x*8);
 
         asm volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" :: "r"(store_smem_addr_a), "l"(load_gmem_addr_a), "n"(CP_SIZE_BYTE));
         asm volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" :: "r"(store_smem_addr_b), "l"(load_gmem_addr_b), "n"(CP_SIZE_BYTE));
@@ -83752,33 +83756,53 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
 #pragma unroll
       for(int xi=0; xi<BASE_SEQ_LEN/TC_SIZE; xi++){
 #pragma unroll
-        for(int i=0; i<TC_SIZE/2; i++){
-          float tmp_max_val = row_scale*s_int32_frag[xi].x[i];
-          thread_max = max(thread_max, tmp_max_val);
+        for(int tc_yi=0; tc_yi<2; tc_yi++){
+#pragma unroll
+          for(int tc_xi=0; tc_xi<2; tc_xi++){
+            float tmp_max_val = row_scale*max(s_int32_frag[xi].x[tc_xi*4+tc_yi*2+0],s_int32_frag[xi].x[tc_xi*4+tc_yi*2+1]);
+            thread_max[tc_yi] = max(thread_max[tc_yi], tmp_max_val);
+          }
         }
       }
 
 
-      thread_max = max(thread_max, __shfl_xor_sync(0xffffffff, thread_max, TC_SIZE));
+#pragma unroll
+      for (int s = 4 / 2; s > 0; s >>= 1){
+#pragma unroll
+        for(int tc_yi=0; tc_yi<2; tc_yi++){
+          thread_max[tc_yi] = max(thread_max[tc_yi], __shfl_xor_sync(0xffffffff, thread_max[tc_yi], s));
+        }
+      }
 
 
 #pragma unroll
       for(int xi=0; xi<BASE_SEQ_LEN/TC_SIZE; xi++){
 #pragma unroll
-        for(int i=0; i<TC_SIZE/2; i++){
-          float tmp_sum_val = __expf(row_scale*s_int32_frag[xi].x[i] - thread_max);
-          p_fp32_frag[xi].x[i] = tmp_sum_val;
-          thread_sum += p_fp32_frag[xi].x[i];
+        for(int tc_yi=0; tc_yi<2; tc_yi++){
+#pragma unroll
+          for(int tc_xi=0; tc_xi<2; tc_xi++){
+            float tmp_sum_val_0 = __expf(row_scale*s_int32_frag[xi].x[tc_xi*4+tc_yi*2+0] - thread_max[tc_yi]);
+            float tmp_sum_val_1 = __expf(row_scale*s_int32_frag[xi].x[tc_xi*4+tc_yi*2+1] - thread_max[tc_yi]);
+            p_fp32_frag[xi].x[tc_xi*4+tc_yi*2+0] = tmp_sum_val_0;
+            p_fp32_frag[xi].x[tc_xi*4+tc_yi*2+1] = tmp_sum_val_1;
+            thread_sum[tc_yi] += (p_fp32_frag[xi].x[tc_xi*4+tc_yi*2+0] + p_fp32_frag[xi].x[tc_xi*4+tc_yi*2+1]);
+          }
         }
       }
 
 
-      thread_sum += __shfl_xor_sync(0xffffffff, thread_sum, TC_SIZE);
+#pragma unroll
+      for (int s = 4 / 2; s > 0; s >>= 1){
+#pragma unroll
+        for(int tc_yi=0; tc_yi<2; tc_yi++){
+          thread_sum[tc_yi] += __shfl_xor_sync(0xffffffff, thread_sum[tc_yi], s);
+        }
+      }
 
 #pragma unroll
       for(int xi=0; xi<BASE_SEQ_LEN/TC_SIZE; xi++){
 #pragma unroll
-        for(int i=0; i<TC_SIZE/2; i++){
+        for(int i=0; i<8; i++){
           const float softmax_out_scale = -128.f;
           p_int8_frag[xi].x[i] = __float2int_rn(max(min(softmax_out_scale * p_fp32_frag[xi].x[i], 0.f), -128.f));
         }
@@ -83792,9 +83816,9 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
       }
 
       for(int k=0; k<(BASE_SEQ_LEN/TC_SIZE); k++){
-        const auto* load_gmem_addr_b = reinterpret_cast<const int8_t*>(V + global_start_v + (warp_id*TC_SIZE + gmem_lane_id_y) * HEAD_DIM + k*TC_SIZE + gmem_lane_id_x*8);
+        const auto* load_gmem_addr_b = reinterpret_cast<const int8_t*>(V + global_start_v + (warp_id*TC_SIZE + lane_id_y) * HEAD_DIM + k*TC_SIZE + lane_id_x*8);
 
-        int store_smem_addr_b = __cvta_generic_to_shared(reinterpret_cast<int8_t*>(smem_v[k%2]) + (warp_id*TC_SIZE + smem_lane_id_y)*TC_SIZE + smem_lane_id_x*8);
+        int store_smem_addr_b = __cvta_generic_to_shared(reinterpret_cast<int8_t*>(smem_v[k%2]) + (warp_id*TC_SIZE + lane_id_y)*TC_SIZE + lane_id_x*8);
 
         asm volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" :: "r"(store_smem_addr_b), "l"(load_gmem_addr_b), "n"(CP_SIZE_BYTE));
 
@@ -83809,24 +83833,27 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
       }
 
       const float scale_o_fp32 = - 1.f;
-      float thread_max_new = max(thread_max_old, thread_max);
-      float exp_max_old = __expf(thread_max_old-thread_max_new);
-      float exp_max = __expf(thread_max-thread_max_new);
-      float thread_sum_new = exp_max_old*thread_sum_old + exp_max*thread_sum;
-
 #pragma unroll
-      for(int xi=0; xi<HEAD_DIM/TC_SIZE; xi++){
+      for(int tc_yi=0; tc_yi<2; tc_yi++){
+        float thread_max_new = max(thread_max_old[tc_yi], thread_max[tc_yi]);
+        float exp_max_old = __expf(thread_max_old[tc_yi]-thread_max_new);
+        float exp_max = __expf(thread_max[tc_yi]-thread_max_new);
+        float thread_sum_new = exp_max_old*thread_sum_old[tc_yi] + exp_max*thread_sum[tc_yi];
 #pragma unroll
-        for(int i=0; i<TC_SIZE/2; i++){
-          o_fp32_frag[xi].x[i] = __frcp_rn(thread_sum_new)*(thread_sum_old*exp_max_old*o_fp32_frag[xi].x[i] + exp_max*(scale_o_fp32 * o_int32_frag[xi].x[i]));
+        for(int xi=0; xi<BASE_SEQ_LEN/TC_SIZE; xi++){
+#pragma unroll
+          for(int tc_xi=0; tc_xi<2; tc_xi++){
+            o_fp32_frag[xi].x[tc_xi*4+tc_yi*2+tc_xi] = __frcp_rn(thread_sum_new)*(thread_sum_old[tc_yi]*exp_max_old*o_fp32_frag[xi].x[tc_xi*4+tc_yi*2+tc_xi] + exp_max*(scale_o_fp32 * o_int32_frag[xi].x[tc_xi*4+tc_yi*2+tc_xi]));
+          }
         }
+        thread_sum_old[tc_yi] = thread_sum_new;
+        thread_max_old[tc_yi] = thread_max_new;
       }
-
-      thread_sum_old = thread_sum_new;
-      thread_max_old = thread_max_new;
     }
 
     uint8_t o_int8_frag[HEAD_DIM/TC_SIZE][TC_SIZE/2];
+    int gmem_lane_id_x = lane_id % 4;
+    int gmem_lane_id_y = lane_id / 4;
 
     const float scale_v_out = fmha_param.v_amax * __frcp_rn(fmha_param.r_amax * 128.f);
 #pragma unroll
@@ -83837,14 +83864,15 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
         o_int8_frag[xi][i] = *reinterpret_cast<uint8_t*>(&tmp_val);
       }
 
-
-      auto* store_gmem_addr = reinterpret_cast<uint2*>(O + global_start_o + (warp_id*TC_SIZE + gmem_lane_id_y) * HEAD_DIM + xi*TC_SIZE + gmem_lane_id_x*8);
-
-      uint2 tmp_vr;
-      tmp_vr.x = o_int8_frag[xi][0] + (o_int8_frag[xi][1] << 8) + (o_int8_frag[xi][2] << 16) + (o_int8_frag[xi][3] << 24);
-      tmp_vr.y = o_int8_frag[xi][4] + (o_int8_frag[xi][5] << 8) + (o_int8_frag[xi][6] << 16) + (o_int8_frag[xi][7] << 24);
-
-      *store_gmem_addr = tmp_vr;
+      for(int tc_yi=0; tc_yi<2; tc_yi++){
+        for(int tc_xi=0; tc_xi<2; tc_xi++){
+          auto* store_gmem_addr = reinterpret_cast<char2*>(O + global_start_o + (warp_id*TC_SIZE + tc_yi*TC_SIZE/2 + gmem_lane_id_y) * HEAD_DIM + xi*TC_SIZE + tc_xi*TC_SIZE/2 + gmem_lane_id_x*2);
+          char2 tmp_char2;
+          tmp_char2.x = o_int8_frag[xi][tc_xi*4+tc_yi*2+0];
+          tmp_char2.y = o_int8_frag[xi][tc_xi*4+tc_yi*2+1];
+          *store_gmem_addr = tmp_char2;
+        }
+      }
     }
 
   }
