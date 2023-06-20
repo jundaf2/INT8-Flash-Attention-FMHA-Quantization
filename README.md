@@ -1,4 +1,60 @@
-# FMHA-INT8-Quantization
+# Code Update: 8-bit Flash-Attention based on 8-bit m16n16k16 WWMA API
+
+## 🚀 Nvidia CUDA Implementation 
+| Feature     | Status    |
+|---------------|---------|
+| Input Q shape [Batch Size, Head Num, Seq Len, Head Dim] | ✅ |
+| Input K shape [Batch Size, Head Num, Seq Len, Head Dim] | ✅ |
+| Input V shape [Batch Size, Head Num, Seq Len, Head Dim] | ✅ |
+| 8-bit char Tensor Core   | ✅ |
+| Head Dim 64   | ✅ |
+| Head Dim 128   | ✅ |
+| Sequence Len multiple of 64   | ✅ |
+| Sequence Len SRC != Sequence Length DST | Planning |
+| Cuda Core Implementation   | Planning |
+| 8-bit hybrid uchar*char Tensor Core Implementation  | Planning |
+| Resolve uncoalsced Global Memory Read & Write of the fused kernel | Planning |
+| Resolve bank conflict of col-major matrix (using cutlass)  | Planning |
+
+## API Usage
+### Launch API
+```
+struct FMHAParamI8 {
+  float q_amax = 0.0f; // absoulte max value of q
+  float k_amax = 0.0f; // absoulte max value of k
+  float v_amax = 0.0f; // absoulte max value of v
+  float o_amax = 1.0f; // absoulte max value of o
+  float s_max = 1.0f; // absoulte max value of softmax result s (not used in this 8-bit fused kernel)
+};
+
+void FMHAInferI8(cudaStream_t stream, 
+                  FMHAParamI8 fmha_param,
+                  AttnDataDescriptor attn_desc, 
+                  const void *q,
+                  const void *k,
+                  const void *v,
+                  const void *padding_mask,
+                  void *o,
+                  const bool use_tcu)
+```
+ - cudaStream_t stream: cuda stream
+ - FMHAParamI8 fmha_param: Attention Quantization parameters
+ - const void *q: shape = [batch_num, head_num, seq_len, head_dim], dtype = int8_t
+ - const void *k: shape = [batch_num, head_num, seq_len, head_dim], dtype = int8_t
+ - const void *v: shape = [batch_num, head_num, seq_len, head_dim], dtype = int8_t
+ - const void *padding_mask: shape = [batch_num, seq_len], dtype = int8_t
+ - void *o: shape = [batch_num, head_num, seq_len, head_dim], dtype = int8_t
+ - const bool use_tcu: currently only support `true`
+
+### Kernel API
+```
+template <int HEAD_DIM, int BASE_SEQ_LEN, int SEQ_LEN, int NUM_WARPS, bool USE_TCU> 
+__global__ typename std::enable_if<(USE_TCU==true), void>::type
+FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, const int8_t * __restrict__ V, const int8_t *padding_mask, int8_t * __restrict__ O, FMHAParamI8 fmha_param)
+```
+
+
+# Theory: FMHA-INT8-Quantization
 
 In this work, we quantize fused multi-head attention (FMHA) and Flash-Attention to lower precision 8-bit integers in the Transformer inference. The proposed method leverages the very nature of Softmax computation without requiring further prior knowledge of the input data. We improve the accuracy of the attention output of the fused kernel by about a factor of 2 in the simulation.
 
@@ -140,6 +196,7 @@ Run python simulation on 8-bit FMHA to show deviation between the 8-bit quantiza
 Run python simulation on 8-bit FMHA to show the error summation of the output when increasing the sequence length as follows. The error summation of the the 8-bit quantization output compared with the groudtruth (FP32 reference) increases when increasing the sequence length.
 
 <div align="center"><img src="./fig/error_sum.png" ...></div>
+
 
 ### Run real BERT models with accuracy comparison.
 The following table lists the achieved F1 Scores of the BERT model during 8-bit inference.
