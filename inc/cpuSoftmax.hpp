@@ -25,13 +25,25 @@ void cpuAttentionMaskedSoftmax(dataType *S, dataType *P, const int* padding_mask
 			_max = max(s_val * _scale, _max);
 		}
 
+		// if((i % (seq_len_q * head_num))==0 || (i % (seq_len_q * head_num))==8){
+		// 	printf("max: %f\n", _max);
+		// }
+
 		for (int j = 0; j < seq_len_k; j++)
 		{
 			_sum += (padding_mask[i / (seq_len_q * head_num) * seq_len_k + j % seq_len_k] == 1) ? static_cast<computeType>(0) : exp(static_cast<computeType>(data_s[j]) * _scale - _max);
 		}
 
+		// if((i % (seq_len_q * head_num))==0 || (i % (seq_len_q * head_num))==8){
+		// 	printf("sum: %f\n", _sum);
+		// }
+
+		
 		for (int j = 0; j < seq_len_k; j++)
 		{
+			// if((i % (seq_len_q * head_num))==0&&j%16<4){
+			// 	printf("### %d: %f\n", j, (padding_mask[i / (seq_len_q * head_num) * seq_len_k + j % seq_len_k] == 1) ? static_cast<dataType>(0) : exp(static_cast<computeType>(data_s[j]) * _scale - _max));
+			// }
 			data_p[j] = (padding_mask[i / (seq_len_q * head_num) * seq_len_k + j % seq_len_k] == 1) ? static_cast<dataType>(0) : static_cast<dataType>(exp(static_cast<computeType>(data_s[j]) * _scale - _max) / _sum);
 		}
 		

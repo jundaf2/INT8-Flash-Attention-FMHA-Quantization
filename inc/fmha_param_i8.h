@@ -12,6 +12,6 @@ struct FMHAParamI8 {
   float q_amax = 0.0f;
   float k_amax = 0.0f;
   float v_amax = 0.0f;
-  float r_amax = 1.0f;
+  float o_amax = 1.0f;
   float s_max = 1.0f;
 };

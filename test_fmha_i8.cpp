@@ -71,21 +71,21 @@ public:
     memset(h_mat_p_ref,0,len_sp * sizeof(float));
     memset(h_mat_o_ref,0,len_kvo * sizeof(float));
 
-    std::uniform_real_distribution<float> uf_distribution(-1.0f, 1.0f);
+    std::uniform_real_distribution<float> uf_distribution(-.5f, .5f);
     std::bernoulli_distribution b_distribution(0.2); // more 0 than 1
 
     for(int i=0; i < len_mask; i++){
-      reinterpret_cast<int *>(h_padding_mask_ref)[i] = 0;//static_cast<int>(b_distribution(generator)); // 
+      reinterpret_cast<int *>(h_padding_mask_ref)[i] = static_cast<int>(b_distribution(generator)); // 
     }
 
     for (int i = 0; i < len_q; i++) {
-      reinterpret_cast<float *>(h_mat_q_ref)[i] = (i/head_dim%3); // uf_distribution(generator); //uf_distribution(generator); //  (i%4096/64);//1+(i%4096/64)/64.0f;//i%4096/64;//uf_distribution(generator); // // 
+      reinterpret_cast<float *>(h_mat_q_ref)[i] = uf_distribution(generator); //1; // uf_distribution(generator); //  1+(i%4096/64)/64.0f;//i%4096/64;//uf_distribution(generator); // (i/head_dim%64);//1; //
     }
     for (int i = 0; i < len_kvo; i++) {
-      reinterpret_cast<float *>(h_mat_k_ref)[i] = 1;// uf_distribution(generator); //1+(i%4096/64)/64.0f;// uf_distribution(generator); //  //uf_distribution(generator); //   
+      reinterpret_cast<float *>(h_mat_k_ref)[i] = uf_distribution(generator); //(i/head_dim%128)*(1.f/head_dim);//1; //uf_distribution(generator); //(i/head_dim%16)*(1.f/64);//1; //(i/head_dim%128)*(1.f/64); //1;//1+(i%4096/64)/64.0f;// 
     }
     for (int i = 0; i < len_kvo; i++) {
-      reinterpret_cast<float *>(h_mat_v_ref)[i] = 1;// uf_distribution(generator); ///32.0f;//  
+      reinterpret_cast<float *>(h_mat_v_ref)[i] = abs(uf_distribution(generator)); //i/head_dim%2 ? - 0.0f : 1.0f;//  (i%4+(i/4))%4*(1.f/head_dim);//uf_distribution(generator); // 32.0f;//  
     }
 
     for(int i=0; i < len_mask; i++){
@@ -158,7 +158,7 @@ public:
           stride_p, stride_v, stride_o, batch_num*head_num, static_cast<float>(1), static_cast<float>(0), GEMM_OP_T, GEMM_OP_T,
           nullptr, false);
 
-      r_amax = abs_max((float *)h_mat_o_ref, len_kvo);
+      o_amax = abs_max((float *)h_mat_o_ref, len_kvo);
     }
 
 
@@ -181,7 +181,7 @@ public:
     fmha_param.q_amax = q_amax;
     fmha_param.k_amax = k_amax;
     fmha_param.v_amax = v_amax;
-    fmha_param.r_amax = r_amax;
+    fmha_param.o_amax = o_amax;
     fmha_param.s_max = s_max;
 
 
@@ -196,7 +196,7 @@ public:
     std::cout << "k_amax: " << k_amax << std::endl;
     std::cout << "v_amax: " << v_amax << std::endl;
     std::cout << "s_max: " << s_max << std::endl;
-    std::cout << "r_amax: " << r_amax << std::endl;
+    std::cout << "o_amax: " << o_amax << std::endl;
 
     // warp up the device
     {  
@@ -241,9 +241,9 @@ public:
     ASSERT_CUDA(cudaFree(d_mat_o));
     ASSERT_CUDA(cudaStreamDestroy(stream));
 
-    print_vec_i8((int8_t *)h_mat_o, "h_mat_o: ", 0, 32*head_dim, head_dim, r_amax);
-    print_vec((float *)h_mat_o_ref, "h_mat_o_ref: ", 0, 32*head_dim, head_dim);
-    compareResultsWithGoldenI8((int8_t *)h_mat_o, (float *)h_mat_o_ref, len_kvo, r_amax); // o = p*v
+    print_vec_i8((int8_t *)h_mat_o, "h_mat_o: ", 0, 2*head_dim, head_dim, o_amax);
+    print_vec((float *)h_mat_o_ref, "h_mat_o_ref: ", 0, 2*head_dim, head_dim);
+    compareResultsWithGoldenI8((int8_t *)h_mat_o, (float *)h_mat_o_ref, len_kvo, o_amax); // o = p*v
 
   }
 
@@ -258,7 +258,7 @@ protected:
   float q_amax = 0.0f;
   float k_amax = 0.0f;
   float v_amax = 0.0f;
-  float r_amax = 1.0f;
+  float o_amax = 1.0f;
   float s_max = 1.0f;
 
   void *h_padding_mask;
@@ -286,29 +286,27 @@ protected:
 
 int main(int argc, char **argv) {
   bool use_tcu = true;
+
   int batch_num = 1;
-  int seq_len = 512;
+  int seq_len = 128;
   int head_num = 1;
   int head_dim = 128;
 
-  if (argc > 1) {
-    use_tcu = atoi(argv[1]);
-  }
-  if (argc > 2) {
-    batch_num = atoi(argv[2]);
-  }
-  if (argc > 3) {
-    seq_len = atoi(argv[3]);
-  }
-  if (argc > 4) {
-    head_num = atoi(argv[4]);
-  }
-  if (argc > 5) {
-    head_dim = atoi(argv[5]);
-  }
+  vector<int> batch_num_list = {1};
+  vector<int> seq_len_list = {64,128,192,256,320,384,448,512,1024,2048,4096};
+  vector<int> head_num_list = {1};
+  vector<int> head_dim_list = {64,128};
 
-  FMHA fmha(use_tcu, batch_num, seq_len, head_num, head_dim);
-  fmha.testFMHA();
+  for(auto batch_num : batch_num_list){
+    for(auto seq_len : seq_len_list){
+      for(auto head_num : head_num_list){
+        for(auto head_dim : head_dim_list){
+          FMHA fmha(use_tcu, batch_num, seq_len, head_num, head_dim);
+          fmha.testFMHA();
+        }
+      }
+    }
+  }
 
   return 0;
 }
