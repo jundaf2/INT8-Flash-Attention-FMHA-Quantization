@@ -226,10 +226,10 @@ public:
     cudaEventSynchronize(stop);
     cudaEventElapsedTime(&milliseconds , start, stop);
     
-    double   flops = batch_num*head_num*(double)(seq_len*seq_len*head_dim*2+seq_len*seq_len*(4)+seq_len*seq_len*head_dim*2)*1.0;
-    double   gigaFlops = (flops * 1.0e-9f) / (milliseconds  / 1000.0f);
+    double   flops = ((double)batch_num)*head_num*(double)(seq_len*seq_len*head_dim*2+seq_len*seq_len*(4)+seq_len*seq_len*head_dim*2)*1.0;
+    double   gigaFlops = (flops * 1.0e-9f) / (((double)milliseconds)  / 1000.0f);
     double   bandWidth = batch_num*head_num*(double)(4*seq_len*head_dim)*sizeof(int8_t) / (milliseconds  * 1000 * 1000);
-    printf("\033[31;47m FMHA Inference took %.3f ms, %.2f GFlop/s, %.2f GB/s \033[0m\n", milliseconds , gigaFlops, bandWidth);
+    printf("\033[31;47m FMHA Inference took %12.8lf ms, %12.8lf GFlop/s, %12.8lf GB/s \033[0m\n", milliseconds , gigaFlops, bandWidth);
     ASSERT_CUDA(cudaDeviceSynchronize());
     ASSERT_CUDA(cudaEventDestroy(start));
     ASSERT_CUDA(cudaEventDestroy(stop));
@@ -241,8 +241,8 @@ public:
     ASSERT_CUDA(cudaFree(d_mat_o));
     ASSERT_CUDA(cudaStreamDestroy(stream));
 
-    print_vec_i8((int8_t *)h_mat_o, "h_mat_o: ", 0, 2*head_dim, head_dim, o_amax);
-    print_vec((float *)h_mat_o_ref, "h_mat_o_ref: ", 0, 2*head_dim, head_dim);
+    // print_vec_i8((int8_t *)h_mat_o, "h_mat_o: ", 0, 2*head_dim, head_dim, o_amax);
+    // print_vec((float *)h_mat_o_ref, "h_mat_o_ref: ", 0, 2*head_dim, head_dim);
     compareResultsWithGoldenI8((int8_t *)h_mat_o, (float *)h_mat_o_ref, len_kvo, o_amax); // o = p*v
 
   }

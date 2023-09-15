@@ -92,7 +92,7 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
     float thread_sum_old[2] = {0, 0}; 
 
     wmma::fragment<wmma::matrix_a, TC_SIZE, TC_SIZE, TC_SIZE, int8_t, wmma::row_major> q_int8_frag;
-    wmma::fragment<wmma::matrix_b, TC_SIZE, TC_SIZE, TC_SIZE, int8_t, wmma::col_major> k_int8_frag;
+    wmma::fragment<wmma::matrix_b, TC_SIZE, TC_SIZE, TC_SIZE, int8_t, wmma::col_major> k_int8_frag[BASE_SEQ_LEN/TC_SIZE];
 
     wmma::fragment<wmma::matrix_a, TC_SIZE, TC_SIZE, TC_SIZE, int8_t, wmma::row_major> p_int8_frag[BASE_SEQ_LEN/TC_SIZE];
     wmma::fragment<wmma::matrix_b, TC_SIZE, TC_SIZE, TC_SIZE, int8_t, wmma::row_major> v_int8_frag;
@@ -136,7 +136,8 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
       
       asm volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" :: "r"(store_smem_addr_a), "l"(load_gmem_addr_a), "n"(CP_SIZE_BYTE));
       asm volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" :: "r"(store_smem_addr_b), "l"(load_gmem_addr_b), "n"(CP_SIZE_BYTE));
-
+      
+      #pragma unroll
       for(k=1; k<(HEAD_DIM/TC_SIZE); k++){
         asm ("cp.async.commit_group;\n" ::);
         asm ("cp.async.wait_group 0;\n" ::);
@@ -152,9 +153,10 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
         asm volatile("cp.async.ca.shared.global.L2::128B [%0], [%1], %2;\n" :: "r"(store_smem_addr_b), "l"(load_gmem_addr_b), "n"(CP_SIZE_BYTE));
 
         wmma::load_matrix_sync(q_int8_frag, &(reinterpret_cast<int8_t*>(smem_q[(k-1)%2])[(warp_id*TC_SIZE)*TC_SIZE]), TC_SIZE);
+        #pragma unroll
         for(int xi=0; xi<(BASE_SEQ_LEN/TC_SIZE); xi++){
-          wmma::load_matrix_sync(k_int8_frag,  &(reinterpret_cast<int8_t*>(smem_k[(k-1)%2])[(xi*TC_SIZE)*TC_SIZE]), TC_SIZE);
-          wmma::mma_sync(s_o_int32_frag[xi], q_int8_frag, k_int8_frag, s_o_int32_frag[xi]);
+          wmma::load_matrix_sync(k_int8_frag[xi],  &(reinterpret_cast<int8_t*>(smem_k[(k-1)%2])[(xi*TC_SIZE)*TC_SIZE]), TC_SIZE);
+          wmma::mma_sync(s_o_int32_frag[xi], q_int8_frag, k_int8_frag[xi], s_o_int32_frag[xi]);
         }
       }
 
@@ -163,9 +165,10 @@ FMHAInferKernel(const int8_t * __restrict__ Q, const int8_t * __restrict__ K, co
       __syncthreads();
       k = (HEAD_DIM/TC_SIZE) - 1;
       wmma::load_matrix_sync(q_int8_frag, &(reinterpret_cast<int8_t*>(smem_q[k%2])[(warp_id*TC_SIZE)*TC_SIZE]), TC_SIZE);
+      #pragma unroll
       for(int xi=0; xi<(BASE_SEQ_LEN/TC_SIZE); xi++){
-        wmma::load_matrix_sync(k_int8_frag,  &(reinterpret_cast<int8_t*>(smem_k[k%2])[(xi*TC_SIZE)*TC_SIZE]), TC_SIZE);
-        wmma::mma_sync(s_o_int32_frag[xi], q_int8_frag, k_int8_frag, s_o_int32_frag[xi]);
+        wmma::load_matrix_sync(k_int8_frag[xi],  &(reinterpret_cast<int8_t*>(smem_k[k%2])[(xi*TC_SIZE)*TC_SIZE]), TC_SIZE);
+        wmma::mma_sync(s_o_int32_frag[xi], q_int8_frag, k_int8_frag[xi], s_o_int32_frag[xi]);
       }
 
       /***** Softmax *****/
